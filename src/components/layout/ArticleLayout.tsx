@@ -160,7 +160,42 @@ const ArticleLayout = ({
                   </div>
                 </header>
                 
-                <div className="prose prose-blue max-w-none lg:prose-lg prose-headings:text-insurance-gray-dark prose-headings:font-semibold prose-p:text-insurance-gray-dark prose-li:text-insurance-gray-dark prose-a:text-insurance-blue prose-a:no-underline hover:prose-a:underline">
+                <div className="prose prose-blue max-w-none lg:prose-lg
+                  prose-headings:text-insurance-gray-dark 
+                  prose-headings:font-semibold 
+                  prose-h2:mt-10 
+                  prose-h2:mb-6 
+                  prose-h2:text-2xl 
+                  prose-h2:font-bold 
+                  prose-h2:pb-2 
+                  prose-h2:border-b 
+                  prose-h2:border-gray-100
+                  prose-h3:mt-8 
+                  prose-h3:mb-4 
+                  prose-h3:text-xl 
+                  prose-h3:font-medium
+                  prose-p:text-insurance-gray-dark 
+                  prose-p:my-6 
+                  prose-p:leading-relaxed
+                  prose-li:text-insurance-gray-dark 
+                  prose-li:my-2
+                  prose-ul:my-6 
+                  prose-ul:pl-6
+                  prose-a:text-insurance-blue 
+                  prose-a:no-underline 
+                  hover:prose-a:underline
+                  prose-strong:font-semibold
+                  prose-strong:text-insurance-gray-dark
+                  prose-table:border-collapse
+                  prose-table:w-full
+                  prose-table:my-8
+                  prose-th:bg-gray-50
+                  prose-th:text-left
+                  prose-th:p-3
+                  prose-td:p-3
+                  prose-td:border-t
+                  prose-td:border-gray-100
+                ">
                   {children}
                 </div>
               </article>
