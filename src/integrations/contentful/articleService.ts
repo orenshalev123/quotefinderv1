@@ -2,27 +2,30 @@
 import { contentfulClient, CONTENT_TYPE_ARTICLE } from './client';
 import { ContentfulArticle, ArticleData } from './types';
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer';
+import { Entry } from 'contentful';
 
 // Transform Contentful article to our app's format
-export const transformArticle = (article: ContentfulArticle): ArticleData => {
+export const transformArticle = (article: Entry<any>): ArticleData => {
+  const fields = article.fields as ContentfulArticle['fields'];
+  
   return {
     id: article.sys.id,
-    title: article.fields.title,
-    slug: article.fields.slug,
-    category: article.fields.category,
-    date: article.fields.date,
-    author: article.fields.author,
-    readTime: article.fields.readTime || '5 min read',
-    content: article.fields.content ? documentToHtmlString(article.fields.content) : '',
-    excerpt: article.fields.excerpt,
-    featuredImage: article.fields.featuredImage?.fields.file.url,
+    title: fields.title,
+    slug: fields.slug,
+    category: fields.category,
+    date: fields.date,
+    author: fields.author,
+    readTime: fields.readTime || '5 min read',
+    content: fields.content ? documentToHtmlString(fields.content) : '',
+    excerpt: fields.excerpt,
+    featuredImage: fields.featuredImage?.fields.file.url,
   };
 };
 
 // Get all articles
 export const getAllArticles = async (): Promise<ArticleData[]> => {
   try {
-    const response = await contentfulClient.getEntries<ContentfulArticle>({
+    const response = await contentfulClient.getEntries({
       content_type: CONTENT_TYPE_ARTICLE,
       order: '-sys.createdAt',
     });
@@ -37,7 +40,7 @@ export const getAllArticles = async (): Promise<ArticleData[]> => {
 // Get article by slug
 export const getArticleBySlug = async (slug: string): Promise<ArticleData | null> => {
   try {
-    const response = await contentfulClient.getEntries<ContentfulArticle>({
+    const response = await contentfulClient.getEntries({
       content_type: CONTENT_TYPE_ARTICLE,
       'fields.slug': slug,
       limit: 1,
@@ -57,7 +60,7 @@ export const getArticleBySlug = async (slug: string): Promise<ArticleData | null
 // Get articles by category
 export const getArticlesByCategory = async (category: string): Promise<ArticleData[]> => {
   try {
-    const response = await contentfulClient.getEntries<ContentfulArticle>({
+    const response = await contentfulClient.getEntries({
       content_type: CONTENT_TYPE_ARTICLE,
       'fields.category': category,
       order: '-sys.createdAt',

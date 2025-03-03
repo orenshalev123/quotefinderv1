@@ -3,9 +3,9 @@ import { createClient } from 'contentful';
 
 // Create a Contentful client
 export const contentfulClient = createClient({
-  space: import.meta.env.VITE_CONTENTFUL_SPACE_ID || '',
-  accessToken: import.meta.env.VITE_CONTENTFUL_ACCESS_TOKEN || '',
-  environment: import.meta.env.VITE_CONTENTFUL_ENVIRONMENT || 'master',
+  space: '9ohibvmav2q6',
+  accessToken: 'jQeUyyAvnIvppIc41r4dGL2hnfnUy8uIiTDjFcSKRGc',
+  environment: 'master',
 });
 
 // Content type IDs (you should match these with your Contentful setup)

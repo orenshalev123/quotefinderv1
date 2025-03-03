@@ -63,7 +63,7 @@ const ContentfulArticle = () => {
       author={article.author}
       readTime={article.readTime}
     >
-      <div dangerouslySetInnerHTML={{ __html: article.content }} />
+      <div className="article-content" dangerouslySetInnerHTML={{ __html: article.content }} />
     </ArticleLayout>
   );
 };

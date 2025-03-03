@@ -1,7 +1,14 @@
 
+import { Document } from '@contentful/rich-text-types';
+
 export interface ContentfulArticle {
   sys: {
     id: string;
+    contentType: {
+      sys: {
+        id: string;
+      }
+    }
   };
   fields: {
     title: string;
@@ -10,11 +17,7 @@ export interface ContentfulArticle {
     date: string;
     author: string;
     readTime?: string;
-    content: {
-      content: {
-        value: string;
-      }[];
-    };
+    content: Document;
     excerpt?: string;
     featuredImage?: {
       fields: {
