@@ -1,15 +1,15 @@
-
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { getAllArticles } from "@/integrations/contentful/articleService";
+import { getAllSanityArticles } from "@/integrations/sanity/articleService";
 import { ArticleData } from "@/integrations/contentful/types";
+import { SanityArticleData } from "@/integrations/sanity/types";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { Skeleton } from "@/components/ui/skeleton";
 import AnimatedCard from "@/components/ui/AnimatedCard";
 import { UserPlus, Newspaper, Clock } from "lucide-react";
 
-// Define the image mapping for articles
 const articleImages: Record<string, string> = {
   "understanding-coverage-types": "/images/article-coverage-types.jpg",
   "lower-premium": "/images/article-lower-premium.jpg",
@@ -20,22 +20,21 @@ const articleImages: Record<string, string> = {
   "insurance-discounts": "/images/article-discounts.jpg",
   "telematics-savings": "/images/article-telematics.jpg",
   "bundle-save": "/images/article-bundle.jpg",
-  // Default image for any article without a specific image
   "default": "/images/article-default.jpg",
 };
 
-// Get appropriate image URL for an article
 const getArticleImage = (slug: string): string => {
   return articleImages[slug] || articleImages["default"];
 };
 
-// Format date to more readable format
 const formatDate = (dateString: string): string => {
   const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
   return new Date(dateString).toLocaleDateString('en-US', options);
 };
 
-const ArticleCard = ({ article, index }: { article: ArticleData; index: number }) => {
+type UnifiedArticle = ArticleData | SanityArticleData;
+
+const ArticleCard = ({ article, index }: { article: UnifiedArticle; index: number }) => {
   return (
     <AnimatedCard delay={index * 0.1} direction="up">
       <div className="group h-full flex flex-col overflow-hidden bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-100">
@@ -77,20 +76,26 @@ const ArticleCard = ({ article, index }: { article: ArticleData; index: number }
 };
 
 const Articles = () => {
-  const [articles, setArticles] = useState<ArticleData[]>([]);
+  const [articles, setArticles] = useState<UnifiedArticle[]>([]);
   const [loading, setLoading] = useState(true);
-  const [featuredArticle, setFeaturedArticle] = useState<ArticleData | null>(null);
+  const [featuredArticle, setFeaturedArticle] = useState<UnifiedArticle | null>(null);
   
   useEffect(() => {
-    const fetchArticles = async () => {
+    const fetchAllArticles = async () => {
       try {
-        const data = await getAllArticles();
-        // Set the first article as featured (could be made smarter with a tag in Contentful)
-        if (data.length > 0) {
-          setFeaturedArticle(data[0]);
-          setArticles(data);
+        const [contentfulArticles, sanityArticles] = await Promise.all([
+          getAllArticles(),
+          getAllSanityArticles()
+        ]);
+        
+        const allArticles = [...contentfulArticles, ...sanityArticles];
+        allArticles.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        
+        if (allArticles.length > 0) {
+          setFeaturedArticle(allArticles[0]);
+          setArticles(allArticles);
         } else {
-          setArticles(data);
+          setArticles(allArticles);
         }
       } catch (error) {
         console.error("Error fetching articles:", error);
@@ -99,7 +104,7 @@ const Articles = () => {
       }
     };
     
-    fetchArticles();
+    fetchAllArticles();
   }, []);
   
   return (
@@ -122,7 +127,6 @@ const Articles = () => {
           </div>
           
           {loading ? (
-            // Skeleton loader while articles are loading
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {Array(6).fill(0).map((_, i) => (
                 <div key={i} className="bg-white rounded-xl shadow-sm overflow-hidden h-full">
@@ -138,7 +142,6 @@ const Articles = () => {
             </div>
           ) : (
             <>
-              {/* Featured Article - First in the list */}
               {featuredArticle && (
                 <div className="mb-12">
                   <h2 className="text-2xl font-semibold mb-6 text-insurance-gray-dark border-b pb-2 border-insurance-blue/20">
@@ -190,7 +193,6 @@ const Articles = () => {
                 </div>
               )}
               
-              {/* All Articles Grid */}
               <h2 className="text-2xl font-semibold mb-6 text-insurance-gray-dark border-b pb-2 border-insurance-blue/20">
                 All Articles
               </h2>

@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Articles from "./pages/Articles";
 import ContentfulArticle from "./components/contentful/ContentfulArticle";
+import SanityArticle from "./components/sanity/SanityArticle";
 import PreviewPage from "./pages/api/preview";
 import QuoteFinderArticle from "./pages/articles/QuoteFinderArticle";
 
@@ -36,11 +37,15 @@ const App = () => (
           {/* Articles Listing Page */}
           <Route path="/articles" element={<Articles />} />
           
-          {/* Preview API Route */}
+          {/* Preview API Routes */}
           <Route path="/api/preview" element={<PreviewPage />} />
+          <Route path="/api/sanity-preview" element={<PreviewPage />} />
           
           {/* Dynamic Contentful Article Route */}
           <Route path="/articles/:slug" element={<ContentfulArticle />} />
+          
+          {/* Sanity Article Route */}
+          <Route path="/sanity-articles/:slug" element={<SanityArticle />} />
           
           {/* QuoteFinder Article (Static, no Contentful) */}
           <Route path="/quote-finder/:slug" element={<QuoteFinderArticle />} />
