@@ -40,4 +40,8 @@ export interface ArticleData {
   content: string;
   excerpt?: string;
   featuredImage?: string;
+  sourceMaps?: {
+    vercelContentId: string;
+    vercelContentSource: string;
+  };
 }
