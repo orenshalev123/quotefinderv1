@@ -35,6 +35,8 @@ export const generateVercelOGTags = (entryId: string) => {
  * @returns The article with source mapping metadata
  */
 export const addSourceMapping = (article: any) => {
+  if (!article || !article.id) return article;
+  
   return {
     ...article,
     sourceMaps: {
@@ -62,7 +64,7 @@ export const applySourceMappingAttributes = (element: HTMLElement | null, entryI
  * @returns boolean indicating if in preview mode
  */
 export const isPreviewMode = (): boolean => {
-  // Import and use the common isPreviewMode function from client.ts
+  // Use the common isPreviewMode function from client.ts
   if (typeof window !== 'undefined') {
     const url = new URL(window.location.href);
     return url.searchParams.get('preview') === 'true';

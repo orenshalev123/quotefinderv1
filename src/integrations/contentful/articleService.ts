@@ -11,11 +11,11 @@ export const transformArticle = (article: Entry<any>): ArticleData => {
   
   return {
     id: article.sys.id,
-    title: fields.title,
-    slug: fields.slug,
-    category: fields.category,
-    date: fields.date,
-    author: fields.author,
+    title: fields.title || 'Untitled Article',
+    slug: fields.slug || article.sys.id,
+    category: fields.category || 'General',
+    date: fields.date || new Date().toISOString().split('T')[0],
+    author: fields.author || 'QuoteFinder',
     readTime: fields.readTime || '5 min read',
     content: fields.content ? documentToHtmlString(fields.content) : '',
     excerpt: fields.excerpt,
@@ -27,8 +27,6 @@ export const transformArticle = (article: Entry<any>): ArticleData => {
 export const transformQuoteFinderContent = (entry: Entry<any>): ArticleData => {
   const fields = entry.fields as QuoteFinderContent['fields'];
   
-  // For QuoteFinder content, we need to extract metadata from the content
-  // This is a simplified version - you might need to parse the Document to extract title, etc.
   return {
     id: entry.sys.id,
     title: "QuoteFinder Article", // You may want to extract this from the content
@@ -56,12 +54,18 @@ export const getAllArticles = async (): Promise<ArticleData[]> => {
     const articleResponse = await client.getEntries({
       content_type: CONTENT_TYPE_ARTICLE,
       order: ['-sys.createdAt']
+    }).catch(error => {
+      console.log('Error fetching articles:', error);
+      return { items: [] };
     });
     
     // Get QuoteFinder content
     const quoteFinderResponse = await client.getEntries({
       content_type: CONTENT_TYPE_QUOTE_FINDER,
       order: ['-sys.createdAt']
+    }).catch(error => {
+      console.log('Error fetching QuoteFinder content:', error);
+      return { items: [] };
     });
     
     // Transform and combine results
@@ -85,6 +89,9 @@ export const getArticleBySlug = async (slug: string): Promise<ArticleData | null
       content_type: CONTENT_TYPE_ARTICLE,
       'fields.slug': slug,
       limit: 1,
+    }).catch(error => {
+      console.log('Error fetching article by slug:', error);
+      return { items: [] };
     });
 
     if (articleResponse.items.length > 0) {
@@ -96,6 +103,9 @@ export const getArticleBySlug = async (slug: string): Promise<ArticleData | null
       content_type: CONTENT_TYPE_QUOTE_FINDER,
       'sys.id': slug, // Using ID as slug for QuoteFinder content
       limit: 1,
+    }).catch(error => {
+      console.log('Error fetching QuoteFinder by ID:', error);
+      return { items: [] };
     });
     
     if (quoteFinderResponse.items.length > 0) {
@@ -119,6 +129,9 @@ export const getArticlesByCategory = async (category: string): Promise<ArticleDa
       content_type: CONTENT_TYPE_ARTICLE,
       'fields.category': category,
       order: ['-sys.createdAt']
+    }).catch(error => {
+      console.log('Error fetching articles by category:', error);
+      return { items: [] };
     });
 
     return response.items.map(transformArticle);

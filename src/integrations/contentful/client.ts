@@ -23,7 +23,7 @@ export const contentfulClient = createClient({
   host: isPreviewMode() ? 'preview.contentful.com' : 'cdn.contentful.com',
 });
 
-// Content type IDs (you should match these with your Contentful setup)
+// Content type IDs (matching your Contentful setup)
 export const CONTENT_TYPE_ARTICLE = 'article';
 export const CONTENT_TYPE_QUOTE_FINDER = 'quoteFinder';
 
