@@ -50,13 +50,21 @@ const Header = () => {
             Home
           </Link>
           
+          {/* Articles Link */}
+          <Link
+            to="/articles"
+            className="text-insurance-gray-dark hover:text-insurance-blue transition-colors font-medium"
+          >
+            Articles
+          </Link>
+          
           {/* Articles Dropdown */}
           <div className="relative">
             <button 
               onClick={() => setIsArticlesOpen(!isArticlesOpen)}
               className="flex items-center text-insurance-gray-dark hover:text-insurance-blue transition-colors font-medium"
             >
-              Articles
+              Categories
               <ChevronDown className="ml-1 h-4 w-4" />
             </button>
             
@@ -106,13 +114,21 @@ const Header = () => {
               Home
             </Link>
             
+            {/* Mobile Articles Link */}
+            <Link
+              to="/articles"
+              className="text-insurance-gray-dark hover:text-insurance-blue transition-colors font-medium py-2"
+            >
+              Articles
+            </Link>
+            
             {/* Mobile Articles Dropdown */}
             <div>
               <button 
                 onClick={() => setIsArticlesOpen(!isArticlesOpen)}
                 className="flex items-center text-insurance-gray-dark hover:text-insurance-blue transition-colors font-medium py-2 w-full text-left"
               >
-                Articles
+                Categories
                 <ChevronDown className="ml-1 h-4 w-4" />
               </button>
               
