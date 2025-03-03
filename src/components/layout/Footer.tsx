@@ -18,7 +18,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
             <h3 className="font-bold text-xl text-insurance-gray-dark mb-6">
-              AutoShield
+              quotefinder.io
             </h3>
             <p className="text-insurance-gray mb-6 max-w-xs">
               The most trusted auto insurance provider with over 20 years of
@@ -76,7 +76,7 @@ const Footer = () => {
               <li className="flex items-center">
                 <Mail className="h-5 w-5 text-insurance-blue mr-3" />
                 <span className="text-insurance-gray">
-                  support@autoshield.com
+                  support@quotefinder.io
                 </span>
               </li>
             </ul>
@@ -85,7 +85,7 @@ const Footer = () => {
 
         <div className="mt-12 pt-8 border-t border-insurance-gray-light flex flex-col md:flex-row justify-between items-center">
           <p className="text-insurance-gray text-sm mb-4 md:mb-0">
-            © {currentYear} AutoShield Insurance. All rights reserved.
+            © {currentYear} quotefinder.io. All rights reserved.
           </p>
           <div className="flex space-x-6">
             <a

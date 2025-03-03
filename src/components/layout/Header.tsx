@@ -35,7 +35,7 @@ const Header = () => {
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center">
           <a href="/" className="text-xl font-bold text-insurance-gray-dark">
-            AutoShield
+            quotefinder.io
           </a>
         </div>
 
