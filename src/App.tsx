@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import ContentfulArticle from "./components/contentful/ContentfulArticle";
+import PreviewPage from "./pages/api/preview";
 
 // Keep static article pages for fallback
 import UnderstandingCoverageTypes from "./pages/articles/UnderstandingCoverageTypes";
@@ -28,6 +29,9 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          
+          {/* Preview API Route */}
+          <Route path="/api/preview" element={<PreviewPage />} />
           
           {/* Dynamic Contentful Article Route */}
           <Route path="/articles/:slug" element={<ContentfulArticle />} />

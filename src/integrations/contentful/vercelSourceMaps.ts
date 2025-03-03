@@ -62,11 +62,10 @@ export const applySourceMappingAttributes = (element: HTMLElement | null, entryI
  * @returns boolean indicating if in preview mode
  */
 export const isPreviewMode = (): boolean => {
-  // In a real implementation, this would check URL parameters or cookies
-  // For now, we'll return false as the default
+  // Import and use the common isPreviewMode function from client.ts
   if (typeof window !== 'undefined') {
     const url = new URL(window.location.href);
-    return url.searchParams.has('preview');
+    return url.searchParams.get('preview') === 'true';
   }
   return false;
 };

@@ -6,15 +6,21 @@ const CONTENTFUL_SPACE_ID = '9ohibvmav2q6';
 const CONTENTFUL_ACCESS_TOKEN = 'jQeUyyAvnIvppIc41r4dGL2hnfnUy8uIiTDjFcSKRGc';
 const CONTENTFUL_PREVIEW_ACCESS_TOKEN = 'GqVPWPDsrZgZ66u5Ox1uHxJ3ZIx0PO6cAvbcvHpvAqc';
 
-// Determine if we're in preview mode
-const isPreviewMode = false; // This would be determined by your app logic
+// Function to check if preview mode is active
+export const isPreviewMode = (): boolean => {
+  if (typeof window !== 'undefined') {
+    const url = new URL(window.location.href);
+    return url.searchParams.get('preview') === 'true';
+  }
+  return false;
+};
 
-// Create a Contentful client with the appropriate token
+// Create a Contentful client with the appropriate token based on preview mode
 export const contentfulClient = createClient({
   space: CONTENTFUL_SPACE_ID,
-  accessToken: isPreviewMode ? CONTENTFUL_PREVIEW_ACCESS_TOKEN : CONTENTFUL_ACCESS_TOKEN,
+  accessToken: isPreviewMode() ? CONTENTFUL_PREVIEW_ACCESS_TOKEN : CONTENTFUL_ACCESS_TOKEN,
   environment: 'master',
-  host: isPreviewMode ? 'preview.contentful.com' : 'cdn.contentful.com',
+  host: isPreviewMode() ? 'preview.contentful.com' : 'cdn.contentful.com',
 });
 
 // Content type IDs (you should match these with your Contentful setup)

@@ -13,6 +13,9 @@ const PreviewPage = () => {
   const slug = searchParams.get('slug');
   const token = searchParams.get('token');
   
+  // Set a consistent preview token
+  const validToken = 'PREVIEW_TOKEN'; // You can change this to any token you want to use
+  
   // Validate required parameters
   if (!slug) {
     return (
@@ -29,7 +32,6 @@ const PreviewPage = () => {
   }
   
   // Validate preview token (in a real app, you'd check this against an env variable)
-  const validToken = process.env.CONTENTFUL_PREVIEW_TOKEN || 'PREVIEW_TOKEN';
   if (token !== validToken) {
     return (
       <div className="container mx-auto py-10">
