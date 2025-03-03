@@ -12,7 +12,7 @@ const ArticleBreadcrumb = ({ title, category }: ArticleBreadcrumbProps) => {
   const truncatedTitle = title.length > 50 ? `${title.substring(0, 50)}...` : title;
   
   return (
-    <nav className="flex items-center text-sm text-insurance-gray py-4 px-6 md:px-8 bg-insurance-gray-lightest rounded-md mb-6" aria-label="Breadcrumb">
+    <nav className="flex items-center text-sm text-insurance-gray py-4 px-6 md:px-8 bg-insurance-gray-lightest rounded-t-md mb-0" aria-label="Breadcrumb">
       <ol className="inline-flex items-center space-x-1 md:space-x-3 flex-wrap">
         <li className="inline-flex items-center">
           <Link to="/" className="inline-flex items-center text-insurance-blue hover:text-insurance-blue-dark transition-colors font-medium">

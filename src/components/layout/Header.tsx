@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -52,8 +51,8 @@ const Header = () => {
       className={cn(
         "fixed w-full top-0 z-50 transition-all duration-300 py-4 px-6",
         isScrolled
-          ? "bg-white/90 backdrop-blur-md shadow-sm"
-          : "bg-transparent"
+          ? "bg-white/95 backdrop-blur-md shadow-sm"
+          : "bg-white shadow-sm"
       )}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -136,7 +135,7 @@ const Header = () => {
 
       {/* Mobile Navigation */}
       {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-white shadow-md animate-fade-in py-4 px-6">
+        <div className="md:hidden absolute top-full left-0 right-0 bg-white shadow-md animate-fade-in py-4 px-6 z-50">
           <nav className="flex flex-col space-y-4">
             <Link
               to="/"
