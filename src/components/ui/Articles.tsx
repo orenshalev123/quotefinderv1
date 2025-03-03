@@ -37,7 +37,6 @@ const Articles = () => {
     }
   };
 
-  // Group articles by category
   const getArticlesByCategory = (category: string) => {
     return articles.filter(article => 
       category === "popular" 
@@ -45,6 +44,15 @@ const Articles = () => {
         : article.category === category
     ).slice(0, 3);
   };
+
+  const quoteFinderArticles = [
+    {
+      id: "quotefinder-auto-insurance-guide",
+      title: "Understanding Auto Insurance: A Complete Guide",
+      slug: "auto-insurance-guide",
+      category: "Insurance"
+    }
+  ];
 
   const articleCategories = [
     {
@@ -61,6 +69,11 @@ const Articles = () => {
       id: "tips",
       title: "Money-Saving Tips",
       articles: getArticlesByCategory("Money-Saving Tips")
+    },
+    {
+      id: "quoteFinder",
+      title: "QuoteFinder Resources",
+      articles: quoteFinderArticles
     }
   ];
 
@@ -78,7 +91,7 @@ const Articles = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {articleCategories.map((category, index) => (
           <AnimatedCard
             key={category.id}
@@ -110,11 +123,21 @@ const Articles = () => {
                 )}
               >
                 <div className="p-4 space-y-2">
-                  {loading ? (
+                  {loading && category.id !== "quoteFinder" ? (
                     Array.from({ length: 3 }).map((_, i) => (
                       <div key={i} className="p-2">
                         <Skeleton className="h-5 w-full" />
                       </div>
+                    ))
+                  ) : category.id === "quoteFinder" ? (
+                    quoteFinderArticles.map((article) => (
+                      <Link
+                        key={article.id}
+                        to={`/quote-finder/${article.slug}`}
+                        className="block p-2 hover:bg-insurance-blue/5 rounded-md text-insurance-gray-dark hover:text-insurance-blue transition-colors"
+                      >
+                        {article.title}
+                      </Link>
                     ))
                   ) : category.articles.length > 0 ? (
                     category.articles.map((article) => (
@@ -132,7 +155,7 @@ const Articles = () => {
                     <p className="p-2 text-insurance-gray-dark">No articles available</p>
                   )}
                   <Link
-                    to={`/categories/${category.id}`}
+                    to={category.id === "quoteFinder" ? "/quote-finder" : `/categories/${category.id}`}
                     className="block mt-4 text-insurance-blue font-medium text-sm hover:underline"
                   >
                     View all articles →

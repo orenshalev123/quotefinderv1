@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import ContentfulArticle from "./components/contentful/ContentfulArticle";
 import PreviewPage from "./pages/api/preview";
+import QuoteFinderArticle from "./pages/articles/QuoteFinderArticle";
 
 // Keep static article pages for fallback
 import UnderstandingCoverageTypes from "./pages/articles/UnderstandingCoverageTypes";
@@ -35,6 +36,10 @@ const App = () => (
           
           {/* Dynamic Contentful Article Route */}
           <Route path="/articles/:slug" element={<ContentfulArticle />} />
+          
+          {/* QuoteFinder Article (Static, no Contentful) */}
+          <Route path="/quote-finder/:slug" element={<QuoteFinderArticle />} />
+          <Route path="/quote-finder" element={<QuoteFinderArticle />} />
           
           {/* Legacy Static Article Routes (for fallback) */}
           <Route path="/articles/understanding-coverage-types" element={<UnderstandingCoverageTypes />} />
