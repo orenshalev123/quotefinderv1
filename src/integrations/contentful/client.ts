@@ -25,6 +25,7 @@ export const contentfulClient = createClient({
 
 // Content type IDs (you should match these with your Contentful setup)
 export const CONTENT_TYPE_ARTICLE = 'article';
+export const CONTENT_TYPE_QUOTE_FINDER = 'quoteFinder';
 
 // Function to create a preview client (useful when you need both clients)
 export const createPreviewClient = () => {

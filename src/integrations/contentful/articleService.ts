@@ -1,9 +1,9 @@
 
-import { contentfulClient, createPreviewClient, CONTENT_TYPE_ARTICLE } from './client';
-import { ContentfulArticle, ArticleData } from './types';
+import { contentfulClient, createPreviewClient, CONTENT_TYPE_ARTICLE, CONTENT_TYPE_QUOTE_FINDER } from './client';
+import { ContentfulArticle, ArticleData, QuoteFinderContent } from './types';
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer';
 import { Entry } from 'contentful';
-import { isPreviewMode } from './vercelSourceMaps';
+import { isPreviewMode } from './client';
 
 // Transform Contentful article to our app's format
 export const transformArticle = (article: Entry<any>): ArticleData => {
@@ -23,6 +23,25 @@ export const transformArticle = (article: Entry<any>): ArticleData => {
   };
 };
 
+// Transform QuoteFinder content to article format
+export const transformQuoteFinderContent = (entry: Entry<any>): ArticleData => {
+  const fields = entry.fields as QuoteFinderContent['fields'];
+  
+  // For QuoteFinder content, we need to extract metadata from the content
+  // This is a simplified version - you might need to parse the Document to extract title, etc.
+  return {
+    id: entry.sys.id,
+    title: "QuoteFinder Article", // You may want to extract this from the content
+    slug: entry.sys.id, // Using the entry ID as slug
+    category: "Insurance",
+    date: new Date().toISOString().split('T')[0],
+    author: "QuoteFinder",
+    readTime: "5 min read",
+    content: fields.Articles ? documentToHtmlString(fields.Articles) : '',
+    excerpt: "Insurance information from QuoteFinder",
+  };
+};
+
 // Get client based on preview mode
 const getClient = () => {
   return isPreviewMode() ? createPreviewClient() : contentfulClient;
@@ -32,12 +51,24 @@ const getClient = () => {
 export const getAllArticles = async (): Promise<ArticleData[]> => {
   try {
     const client = getClient();
-    const response = await client.getEntries({
+    
+    // Get standard articles
+    const articleResponse = await client.getEntries({
       content_type: CONTENT_TYPE_ARTICLE,
-      order: ['-sys.createdAt'] // Fix: Use array for order parameter
+      order: ['-sys.createdAt']
     });
-
-    return response.items.map(transformArticle);
+    
+    // Get QuoteFinder content
+    const quoteFinderResponse = await client.getEntries({
+      content_type: CONTENT_TYPE_QUOTE_FINDER,
+      order: ['-sys.createdAt']
+    });
+    
+    // Transform and combine results
+    const standardArticles = articleResponse.items.map(transformArticle);
+    const quoteFinderArticles = quoteFinderResponse.items.map(transformQuoteFinderContent);
+    
+    return [...standardArticles, ...quoteFinderArticles];
   } catch (error) {
     console.error('Error fetching articles from Contentful:', error);
     return [];
@@ -48,17 +79,30 @@ export const getAllArticles = async (): Promise<ArticleData[]> => {
 export const getArticleBySlug = async (slug: string): Promise<ArticleData | null> => {
   try {
     const client = getClient();
-    const response = await client.getEntries({
+    
+    // Try to find it as a standard article first
+    const articleResponse = await client.getEntries({
       content_type: CONTENT_TYPE_ARTICLE,
       'fields.slug': slug,
       limit: 1,
     });
 
-    if (response.items.length === 0) {
-      return null;
+    if (articleResponse.items.length > 0) {
+      return transformArticle(articleResponse.items[0]);
+    }
+    
+    // If not found, check if it's a QuoteFinder entry
+    const quoteFinderResponse = await client.getEntries({
+      content_type: CONTENT_TYPE_QUOTE_FINDER,
+      'sys.id': slug, // Using ID as slug for QuoteFinder content
+      limit: 1,
+    });
+    
+    if (quoteFinderResponse.items.length > 0) {
+      return transformQuoteFinderContent(quoteFinderResponse.items[0]);
     }
 
-    return transformArticle(response.items[0]);
+    return null;
   } catch (error) {
     console.error(`Error fetching article with slug "${slug}" from Contentful:`, error);
     return null;
@@ -69,10 +113,12 @@ export const getArticleBySlug = async (slug: string): Promise<ArticleData | null
 export const getArticlesByCategory = async (category: string): Promise<ArticleData[]> => {
   try {
     const client = getClient();
+    
+    // For simplicity, we'll only search standard articles by category
     const response = await client.getEntries({
       content_type: CONTENT_TYPE_ARTICLE,
       'fields.category': category,
-      order: ['-sys.createdAt'] // Fix: Use array for order parameter
+      order: ['-sys.createdAt']
     });
 
     return response.items.map(transformArticle);

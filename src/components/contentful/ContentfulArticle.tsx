@@ -103,7 +103,7 @@ const ContentfulArticle = () => {
         </Alert>
       )}
       <div 
-        className="article-content" 
+        className="article-content prose prose-lg max-w-none" 
         dangerouslySetInnerHTML={{ __html: article.content }}
         data-vercel-content-id={article.id}
         data-vercel-content-source={article.sourceMaps?.vercelContentSource}

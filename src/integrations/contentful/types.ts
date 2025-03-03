@@ -29,6 +29,20 @@ export interface ContentfulArticle {
   };
 }
 
+export interface QuoteFinderContent {
+  sys: {
+    id: string;
+    contentType: {
+      sys: {
+        id: string;
+      }
+    }
+  };
+  fields: {
+    Articles: Document;
+  };
+}
+
 export interface ArticleData {
   id: string;
   title: string;
@@ -45,3 +59,4 @@ export interface ArticleData {
     vercelContentSource: string;
   };
 }
+
