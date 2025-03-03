@@ -1,42 +1,32 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronDown, Book } from "lucide-react";
 import AnimatedCard from "./AnimatedCard";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
+import { getAllArticles } from "@/integrations/contentful/articleService";
+import { ArticleData } from "@/integrations/contentful/types";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Articles = () => {
   const [openCategory, setOpenCategory] = useState<string | null>("popular");
+  const [articles, setArticles] = useState<ArticleData[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const articleCategories = [
-    {
-      id: "popular",
-      title: "Popular Articles",
-      articles: [
-        { title: "Understanding Auto Insurance Coverage Types", href: "/articles/understanding-coverage-types" },
-        { title: "How to Lower Your Insurance Premium", href: "/articles/lower-premium" },
-        { title: "What to Do After a Car Accident", href: "/articles/after-accident" },
-      ]
-    },
-    {
-      id: "coverage",
-      title: "Coverage Information",
-      articles: [
-        { title: "Comprehensive vs. Collision Coverage", href: "/articles/comprehensive-vs-collision" },
-        { title: "Liability Coverage Explained", href: "/articles/liability-coverage" },
-        { title: "Do You Need Uninsured Motorist Coverage?", href: "/articles/uninsured-motorist" },
-      ]
-    },
-    {
-      id: "tips",
-      title: "Money-Saving Tips",
-      articles: [
-        { title: "Insurance Discounts You Might Be Missing", href: "/articles/insurance-discounts" },
-        { title: "How Telematics Can Save You Money", href: "/articles/telematics-savings" },
-        { title: "Bundle and Save: Home and Auto Insurance", href: "/articles/bundle-save" },
-      ]
-    }
-  ];
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        const data = await getAllArticles();
+        setArticles(data);
+      } catch (error) {
+        console.error("Error fetching articles:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchArticles();
+  }, []);
 
   const toggleCategory = (categoryId: string) => {
     if (openCategory === categoryId) {
@@ -45,6 +35,33 @@ const Articles = () => {
       setOpenCategory(categoryId);
     }
   };
+
+  // Group articles by category
+  const getArticlesByCategory = (category: string) => {
+    return articles.filter(article => 
+      category === "popular" 
+        ? ["Understanding Auto Insurance Coverage Types", "How to Lower Your Insurance Premium", "What to Do After a Car Accident"].includes(article.title)
+        : article.category === category
+    ).slice(0, 3);
+  };
+
+  const articleCategories = [
+    {
+      id: "popular",
+      title: "Popular Articles",
+      articles: getArticlesByCategory("popular")
+    },
+    {
+      id: "coverage",
+      title: "Coverage Information",
+      articles: getArticlesByCategory("Coverage Information")
+    },
+    {
+      id: "tips",
+      title: "Money-Saving Tips",
+      articles: getArticlesByCategory("Money-Saving Tips")
+    }
+  ];
 
   return (
     <section className="py-20 px-6 max-w-7xl mx-auto" id="articles">
@@ -92,15 +109,28 @@ const Articles = () => {
                 )}
               >
                 <div className="p-4 space-y-2">
-                  {category.articles.map((article) => (
-                    <Link
-                      key={article.title}
-                      to={article.href}
-                      className="block p-2 hover:bg-insurance-blue/5 rounded-md text-insurance-gray-dark hover:text-insurance-blue transition-colors"
-                    >
-                      {article.title}
-                    </Link>
-                  ))}
+                  {loading ? (
+                    // Show skeletons while loading
+                    Array.from({ length: 3 }).map((_, i) => (
+                      <div key={i} className="p-2">
+                        <Skeleton className="h-5 w-full" />
+                      </div>
+                    ))
+                  ) : category.articles.length > 0 ? (
+                    // Show articles if available
+                    category.articles.map((article) => (
+                      <Link
+                        key={article.id}
+                        to={`/articles/${article.slug}`}
+                        className="block p-2 hover:bg-insurance-blue/5 rounded-md text-insurance-gray-dark hover:text-insurance-blue transition-colors"
+                      >
+                        {article.title}
+                      </Link>
+                    ))
+                  ) : (
+                    // Show message if no articles
+                    <p className="p-2 text-insurance-gray-dark">No articles available</p>
+                  )}
                   <Link
                     to={`/categories/${category.id}`}
                     className="block mt-4 text-insurance-blue font-medium text-sm hover:underline"

@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -6,8 +5,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import ContentfulArticle from "./components/contentful/ContentfulArticle";
 
-// Article pages
+// Keep static article pages for fallback
 import UnderstandingCoverageTypes from "./pages/articles/UnderstandingCoverageTypes";
 import LowerPremium from "./pages/articles/LowerPremium";
 import AfterAccident from "./pages/articles/AfterAccident";
@@ -29,7 +29,10 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           
-          {/* Article Routes */}
+          {/* Dynamic Contentful Article Route */}
+          <Route path="/articles/:slug" element={<ContentfulArticle />} />
+          
+          {/* Legacy Static Article Routes (for fallback) */}
           <Route path="/articles/understanding-coverage-types" element={<UnderstandingCoverageTypes />} />
           <Route path="/articles/lower-premium" element={<LowerPremium />} />
           <Route path="/articles/after-accident" element={<AfterAccident />} />
@@ -40,7 +43,7 @@ const App = () => (
           <Route path="/articles/telematics-savings" element={<TelematicsSavings />} />
           <Route path="/articles/bundle-save" element={<BundleSave />} />
           
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          {/* Catch-all route */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
