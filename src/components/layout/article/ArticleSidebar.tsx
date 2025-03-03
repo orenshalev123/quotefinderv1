@@ -2,12 +2,7 @@
 import RelatedArticles from "./RelatedArticles";
 import PopularTopics from "./PopularTopics";
 import NewsletterSignup from "./NewsletterSignup";
-
-interface RelatedArticle {
-  title: string;
-  href: string;
-  category: string;
-}
+import { RelatedArticle } from "@/hooks/useRelatedArticles";
 
 interface ArticleSidebarProps {
   relatedArticles: RelatedArticle[];

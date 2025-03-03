@@ -1,11 +1,6 @@
 
 import { Link } from "react-router-dom";
-
-interface RelatedArticle {
-  title: string;
-  href: string;
-  category: string;
-}
+import { RelatedArticle } from "@/hooks/useRelatedArticles";
 
 interface RelatedArticlesProps {
   articles: RelatedArticle[];

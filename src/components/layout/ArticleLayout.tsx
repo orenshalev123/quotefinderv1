@@ -7,6 +7,7 @@ import ArticleContent from "./article/ArticleContent";
 import ArticleShare from "./article/ArticleShare";
 import ArticleNavigation from "./article/ArticleNavigation";
 import ArticleSidebar from "./article/ArticleSidebar";
+import { useRelatedArticles } from "@/hooks/useRelatedArticles";
 
 interface ArticleLayoutProps {
   title: string;
@@ -25,25 +26,7 @@ const ArticleLayout = ({
   readTime = "5 min read",
   children,
 }: ArticleLayoutProps) => {
-  const getRelatedArticles = () => {
-    const allArticles = [
-      { title: "Understanding Auto Insurance Coverage Types", href: "/articles/understanding-coverage-types", category: "Coverage Information" },
-      { title: "How to Lower Your Insurance Premium", href: "/articles/lower-premium", category: "Money-Saving Tips" },
-      { title: "What to Do After a Car Accident", href: "/articles/after-accident", category: "Popular Articles" },
-      { title: "Comprehensive vs. Collision Coverage", href: "/articles/comprehensive-vs-collision", category: "Coverage Information" },
-      { title: "Liability Coverage Explained", href: "/articles/liability-coverage", category: "Coverage Information" },
-      { title: "Do You Need Uninsured Motorist Coverage?", href: "/articles/uninsured-motorist", category: "Coverage Information" },
-      { title: "Insurance Discounts You Might Be Missing", href: "/articles/insurance-discounts", category: "Money-Saving Tips" },
-      { title: "How Telematics Can Save You Money", href: "/articles/telematics-savings", category: "Money-Saving Tips" },
-      { title: "Bundle and Save: Home and Auto Insurance", href: "/articles/bundle-save", category: "Money-Saving Tips" },
-    ];
-    
-    return allArticles
-      .filter(article => article.category === category && article.title !== title)
-      .slice(0, 3);
-  };
-
-  const relatedArticles = getRelatedArticles();
+  const relatedArticles = useRelatedArticles(title, category);
   
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
