@@ -1,4 +1,3 @@
-
 import { contentfulClient, createPreviewClient, CONTENT_TYPE_ARTICLE, CONTENT_TYPE_QUOTE_FINDER } from './client';
 import { ContentfulArticle, ArticleData, QuoteFinderContent } from './types';
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer';
@@ -84,7 +83,7 @@ export const getAllArticles = async (): Promise<ArticleData[]> => {
 };
 
 // Get article by slug
-export const getArticleBySlug = async (slug: string): Promise<ArticleData | null> => {
+export const getArticleBySlug = async (slug: string, contentType: string = 'article'): Promise<ArticleData | null> => {
   try {
     const client = getClient();
     

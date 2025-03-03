@@ -10,8 +10,9 @@ import { AlertTriangle } from 'lucide-react';
 
 const PreviewPage = () => {
   const [searchParams] = useSearchParams();
-  const slug = searchParams.get('slug');
+  const slug = searchParams.get('slug') || searchParams.get('entry_id');
   const token = searchParams.get('token');
+  const contentType = searchParams.get('content_type') || 'article';
   
   // We will check against both the dedicated preview token and the Contentful preview token
   // In production, you would use an environment variable for this instead of hardcoding
@@ -28,7 +29,7 @@ const PreviewPage = () => {
           <AlertTriangle className="h-4 w-4" />
           <AlertTitle>Missing Parameters</AlertTitle>
           <AlertDescription>
-            The slug parameter is required to preview content.
+            The slug or entry_id parameter is required to preview content.
           </AlertDescription>
         </Alert>
       </div>
@@ -51,7 +52,7 @@ const PreviewPage = () => {
   }
   
   // Redirect to the article with preview flag
-  return <Navigate to={`/articles/${slug}?preview=true`} replace />;
+  return <Navigate to={`/articles/${slug}?preview=true&content_type=${contentType}`} replace />;
 };
 
 export default PreviewPage;

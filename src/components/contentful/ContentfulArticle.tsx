@@ -12,6 +12,7 @@ const ContentfulArticle = () => {
   const { slug } = useParams<{ slug: string }>();
   const [searchParams] = useSearchParams();
   const preview = searchParams.get('preview') === 'true';
+  const contentType = searchParams.get('content_type') || 'article';
   const [article, setArticle] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -22,7 +23,7 @@ const ContentfulArticle = () => {
       
       try {
         setLoading(true);
-        const articleData = await getArticleBySlug(slug);
+        const articleData = await getArticleBySlug(slug, contentType);
         
         if (!articleData) {
           setError('Article not found');
@@ -45,7 +46,7 @@ const ContentfulArticle = () => {
     };
 
     fetchArticle();
-  }, [slug, preview]);
+  }, [slug, preview, contentType]);
   
   // Function to add Vercel metadata tags for Visual Editing
   const addVercelMetaTags = (entryId: string) => {
