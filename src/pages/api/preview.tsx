@@ -13,8 +13,12 @@ const PreviewPage = () => {
   const slug = searchParams.get('slug');
   const token = searchParams.get('token');
   
-  // Set a consistent preview token
-  const validToken = 'PREVIEW_TOKEN'; // You can change this to any token you want to use
+  // We will check against both the dedicated preview token and the Contentful preview token
+  // In production, you would use an environment variable for this instead of hardcoding
+  const validTokens = [
+    'PREVIEW_TOKEN', // Your dedicated preview token
+    'GqVPWPDsrZgZ66u5Ox1uHxJ3ZIx0PO6cAvbcvHpvAqc' // Your Contentful preview token
+  ];
   
   // Validate required parameters
   if (!slug) {
@@ -31,8 +35,8 @@ const PreviewPage = () => {
     );
   }
   
-  // Validate preview token (in a real app, you'd check this against an env variable)
-  if (token !== validToken) {
+  // Validate preview token
+  if (!validTokens.includes(token || '')) {
     return (
       <div className="container mx-auto py-10">
         <Alert variant="destructive">
