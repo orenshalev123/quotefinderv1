@@ -1,4 +1,3 @@
-
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
@@ -25,7 +24,6 @@ const ArticleLayout = ({
 }: ArticleLayoutProps) => {
   const { toast } = useToast();
   
-  // Get related articles based on category
   const getRelatedArticles = () => {
     const allArticles = [
       { title: "Understanding Auto Insurance Coverage Types", href: "/articles/understanding-coverage-types", category: "Coverage Information" },
@@ -47,7 +45,6 @@ const ArticleLayout = ({
   const relatedArticles = getRelatedArticles();
   
   const handleShare = (platform: string) => {
-    // Mock share functionality
     toast({
       title: "Shared!",
       description: `Article shared on ${platform}`,
@@ -60,8 +57,7 @@ const ArticleLayout = ({
       <Header />
       
       <main className="flex-grow pt-6 pb-16 px-4 sm:px-6">
-        <div className="max-w-5xl mx-auto">
-          {/* Breadcrumb Navigation */}
+        <div className="max-w-4xl mx-auto">
           <nav className="flex items-center text-sm text-insurance-gray mb-6" aria-label="Breadcrumb">
             <ol className="inline-flex items-center space-x-1 md:space-x-3 flex-wrap">
               <li className="inline-flex items-center">
@@ -91,17 +87,15 @@ const ArticleLayout = ({
           </nav>
           
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
-            {/* Main Content */}
             <div className="md:col-span-8">
               <article className="bg-white rounded-xl shadow-sm overflow-hidden">
-                {/* Article Header */}
-                <header className="border-b border-gray-200 px-6 pt-6 pb-4">
+                <header className="border-b border-gray-200 px-8 pt-8 pb-6">
                   {category && (
                     <span className="inline-block text-sm font-medium text-insurance-blue bg-insurance-blue/10 px-3 py-1 rounded-full mb-3">
                       {category}
                     </span>
                   )}
-                  <h1 className="text-2xl md:text-3xl font-bold text-insurance-gray-dark mb-4 leading-tight">
+                  <h1 className="text-3xl md:text-4xl font-bold text-insurance-gray-dark mb-4 leading-tight">
                     {title}
                   </h1>
                   
@@ -121,8 +115,7 @@ const ArticleLayout = ({
                   </div>
                 </header>
                 
-                {/* Article Content */}
-                <div className="px-6 py-6">
+                <div className="px-8 py-8">
                   <div className="prose prose-sm max-w-none sm:prose lg:prose-lg
                     prose-headings:text-insurance-gray-dark 
                     prose-headings:font-semibold 
@@ -132,36 +125,36 @@ const ArticleLayout = ({
                     prose-h1:pb-4
                     prose-h1:mb-6
                     
-                    prose-h2:text-xl
+                    prose-h2:text-2xl
                     prose-h2:font-bold
                     prose-h2:mt-10
-                    prose-h2:mb-4
+                    prose-h2:mb-5
                     prose-h2:pb-1
                     prose-h2:border-b
                     prose-h2:border-gray-200
                     prose-h2:text-insurance-blue-dark
                     
-                    prose-h3:text-lg
+                    prose-h3:text-xl
                     prose-h3:font-bold
-                    prose-h3:mt-6
-                    prose-h3:mb-3
+                    prose-h3:mt-8
+                    prose-h3:mb-4
                     prose-h3:text-insurance-gray-dark
                     
                     prose-p:text-insurance-gray-dark
-                    prose-p:my-5
+                    prose-p:my-6
                     prose-p:leading-relaxed
                     prose-p:text-base
                     
                     prose-li:text-insurance-gray-dark 
-                    prose-li:my-1
+                    prose-li:my-2
                     prose-li:text-base
                     prose-li:leading-relaxed
                     
-                    prose-ul:my-5
+                    prose-ul:my-6
                     prose-ul:pl-5
                     prose-ul:list-disc
                     
-                    prose-ol:my-5
+                    prose-ol:my-6
                     prose-ol:pl-5
                     prose-ol:list-decimal
                     
@@ -175,9 +168,9 @@ const ArticleLayout = ({
                     
                     prose-blockquote:border-l-4
                     prose-blockquote:border-insurance-blue-light
-                    prose-blockquote:pl-4
-                    prose-blockquote:py-1
-                    prose-blockquote:my-5
+                    prose-blockquote:pl-6
+                    prose-blockquote:py-2
+                    prose-blockquote:my-8
                     prose-blockquote:italic
                     prose-blockquote:text-insurance-gray-dark
                     prose-blockquote:bg-gray-50
@@ -185,28 +178,27 @@ const ArticleLayout = ({
                     prose-table:border
                     prose-table:border-collapse
                     prose-table:w-full
-                    prose-table:my-6
+                    prose-table:my-8
                     
                     prose-th:bg-gray-100
                     prose-th:text-left
-                    prose-th:p-2
+                    prose-th:p-3
                     prose-th:font-semibold
                     prose-th:border
                     prose-th:border-gray-300
                     
-                    prose-td:p-2
+                    prose-td:p-3
                     prose-td:border
                     prose-td:border-gray-300
                     
-                    prose-hr:my-8
+                    prose-hr:my-10
                     prose-hr:border-gray-200
                   ">
                     {children}
                   </div>
                 </div>
                 
-                {/* Article Footer - Social Sharing */}
-                <div className="border-t border-gray-200 px-6 py-4 bg-gray-50">
+                <div className="border-t border-gray-200 px-8 py-6 bg-gray-50">
                   <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
                     <div className="mb-3 sm:mb-0">
                       <span className="text-sm text-insurance-gray-dark font-medium mr-2">Share this article:</span>
@@ -257,7 +249,6 @@ const ArticleLayout = ({
                 </div>
               </article>
               
-              {/* Article Navigation */}
               <div className="flex justify-between items-center mt-6 px-2">
                 <Link to="/#articles">
                   <Button variant="outline" className="text-insurance-blue gap-2">
@@ -273,7 +264,6 @@ const ArticleLayout = ({
                 </Link>
               </div>
               
-              {/* Back to Articles */}
               <div className="mt-6 flex justify-center">
                 <Link to="/#articles">
                   <Button variant="outline" className="text-insurance-blue">
@@ -284,9 +274,7 @@ const ArticleLayout = ({
               </div>
             </div>
             
-            {/* Sidebar */}
             <div className="md:col-span-4">
-              {/* Related Articles */}
               {relatedArticles.length > 0 && (
                 <div className="bg-white border border-gray-200 rounded mb-6">
                   <h3 className="text-lg font-semibold p-4 border-b border-gray-200 text-insurance-gray-dark">Related Articles</h3>
@@ -305,7 +293,6 @@ const ArticleLayout = ({
                 </div>
               )}
               
-              {/* Popular Topics */}
               <div className="bg-white border border-gray-200 rounded mb-6">
                 <h3 className="text-lg font-semibold p-4 border-b border-gray-200 text-insurance-gray-dark">Popular Topics</h3>
                 <div className="p-4 flex flex-wrap gap-2">
@@ -342,7 +329,6 @@ const ArticleLayout = ({
                 </div>
               </div>
               
-              {/* Newsletter Signup */}
               <div className="bg-white border border-gray-200 rounded overflow-hidden">
                 <div className="bg-insurance-blue-dark text-white p-4">
                   <h3 className="text-lg font-semibold">Stay Informed</h3>
