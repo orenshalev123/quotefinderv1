@@ -1,7 +1,29 @@
 
 import ArticleLayout from "@/components/layout/ArticleLayout";
+import { useEffect } from "react";
+import { generateVercelOGTags } from "@/integrations/contentful/vercelSourceMaps";
 
 const LiabilityCoverage = () => {
+  // Add Vercel content source mapping
+  useEffect(() => {
+    // This is a hardcoded article ID that would match the one in Contentful
+    const contentfulEntryId = "liability-coverage";
+    const tags = generateVercelOGTags(contentfulEntryId);
+    
+    // Add metadata tags to document head
+    document.querySelectorAll('meta[name^="vercel-"]').forEach(tag => tag.remove());
+    
+    const head = document.querySelector('head');
+    if (head) {
+      Object.entries(tags).forEach(([name, content]) => {
+        const meta = document.createElement('meta');
+        meta.setAttribute('name', name);
+        meta.setAttribute('content', content);
+        head.appendChild(meta);
+      });
+    }
+  }, []);
+
   return (
     <ArticleLayout 
       title="Liability Coverage Explained"

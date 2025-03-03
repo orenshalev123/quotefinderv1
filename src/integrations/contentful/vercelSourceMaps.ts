@@ -43,3 +43,15 @@ export const addSourceMapping = (article: any) => {
     }
   };
 };
+
+/**
+ * Apply source mapping tag attributes to a DOM element (for use with React refs)
+ * @param element The DOM element to add attributes to
+ * @param entryId The Contentful entry ID
+ */
+export const applySourceMappingAttributes = (element: HTMLElement | null, entryId: string) => {
+  if (!element) return;
+  
+  element.setAttribute('data-vercel-content-id', entryId);
+  element.setAttribute('data-vercel-content-source', getContentSourceMapUrl(entryId));
+};
