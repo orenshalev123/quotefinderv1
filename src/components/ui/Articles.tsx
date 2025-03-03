@@ -1,10 +1,10 @@
-
 import { useState, useEffect } from "react";
 import { ChevronDown, Book } from "lucide-react";
 import AnimatedCard from "./AnimatedCard";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import { getAllArticles } from "@/integrations/contentful/articleService";
+import { addSourceMapping } from "@/integrations/contentful/vercelSourceMaps";
 import { ArticleData } from "@/integrations/contentful/types";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -17,7 +17,8 @@ const Articles = () => {
     const fetchArticles = async () => {
       try {
         const data = await getAllArticles();
-        setArticles(data);
+        const articlesWithSourceMaps = data.map(article => addSourceMapping(article));
+        setArticles(articlesWithSourceMaps);
       } catch (error) {
         console.error("Error fetching articles:", error);
       } finally {
@@ -110,25 +111,24 @@ const Articles = () => {
               >
                 <div className="p-4 space-y-2">
                   {loading ? (
-                    // Show skeletons while loading
                     Array.from({ length: 3 }).map((_, i) => (
                       <div key={i} className="p-2">
                         <Skeleton className="h-5 w-full" />
                       </div>
                     ))
                   ) : category.articles.length > 0 ? (
-                    // Show articles if available
                     category.articles.map((article) => (
                       <Link
                         key={article.id}
                         to={`/articles/${article.slug}`}
                         className="block p-2 hover:bg-insurance-blue/5 rounded-md text-insurance-gray-dark hover:text-insurance-blue transition-colors"
+                        data-vercel-content-id={article.sourceMaps?.vercelContentId}
+                        data-vercel-content-source={article.sourceMaps?.vercelContentSource}
                       >
                         {article.title}
                       </Link>
                     ))
                   ) : (
-                    // Show message if no articles
                     <p className="p-2 text-insurance-gray-dark">No articles available</p>
                   )}
                   <Link

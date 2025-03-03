@@ -27,7 +27,7 @@ export const getAllArticles = async (): Promise<ArticleData[]> => {
   try {
     const response = await contentfulClient.getEntries({
       content_type: CONTENT_TYPE_ARTICLE,
-      order: '-sys.createdAt',
+      order: ['-sys.createdAt'] // Fix: Use array for order parameter
     });
 
     return response.items.map(transformArticle);
@@ -63,7 +63,7 @@ export const getArticlesByCategory = async (category: string): Promise<ArticleDa
     const response = await contentfulClient.getEntries({
       content_type: CONTENT_TYPE_ARTICLE,
       'fields.category': category,
-      order: '-sys.createdAt',
+      order: ['-sys.createdAt'] // Fix: Use array for order parameter
     });
 
     return response.items.map(transformArticle);
