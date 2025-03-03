@@ -50,7 +50,8 @@ const Articles = () => {
       id: "quotefinder-auto-insurance-guide",
       title: "Understanding Auto Insurance: A Complete Guide",
       slug: "auto-insurance-guide",
-      category: "Insurance"
+      category: "Insurance",
+      sourceMaps: undefined
     }
   ];
 

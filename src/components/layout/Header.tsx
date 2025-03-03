@@ -150,6 +150,7 @@ const ArticleLinks = ({ isMobile = false }: { isMobile?: boolean }) => {
     { title: "What to Do After a Car Accident", href: "/articles/after-accident" },
     { title: "Comprehensive vs. Collision Coverage", href: "/articles/comprehensive-vs-collision" },
     { title: "Insurance Discounts You Might Be Missing", href: "/articles/insurance-discounts" },
+    { title: "Understanding Auto Insurance: A Complete Guide", href: "/quote-finder/auto-insurance-guide" },
   ];
 
   return (
