@@ -1,13 +1,17 @@
 
 import { useState, useEffect } from 'react';
-import { useParams, Navigate } from 'react-router-dom';
+import { useParams, Navigate, useSearchParams } from 'react-router-dom';
 import { getArticleBySlug } from '@/integrations/contentful/articleService';
-import { addSourceMapping } from '@/integrations/contentful/vercelSourceMaps';
+import { addSourceMapping, isPreviewMode } from '@/integrations/contentful/vercelSourceMaps';
 import ArticleLayout from '@/components/layout/ArticleLayout';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import { BadgeAlert } from 'lucide-react';
 
 const ContentfulArticle = () => {
   const { slug } = useParams<{ slug: string }>();
+  const [searchParams] = useSearchParams();
+  const preview = searchParams.get('preview') === 'true';
   const [article, setArticle] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -39,7 +43,7 @@ const ContentfulArticle = () => {
     };
 
     fetchArticle();
-  }, [slug]);
+  }, [slug, preview]);
   
   // Function to add Vercel metadata tags for Visual Editing
   const addVercelMetaTags = (entryId: string) => {
@@ -89,7 +93,21 @@ const ContentfulArticle = () => {
       author={article.author}
       readTime={article.readTime}
     >
-      <div className="article-content" dangerouslySetInnerHTML={{ __html: article.content }} />
+      {preview && (
+        <Alert className="mb-6 bg-amber-50 border-amber-200">
+          <BadgeAlert className="h-4 w-4 text-amber-600" />
+          <AlertTitle>Preview Mode</AlertTitle>
+          <AlertDescription>
+            You are viewing this article in preview mode. Some content may not be published yet.
+          </AlertDescription>
+        </Alert>
+      )}
+      <div 
+        className="article-content" 
+        dangerouslySetInnerHTML={{ __html: article.content }}
+        data-vercel-content-id={article.id}
+        data-vercel-content-source={article.sourceMaps?.vercelContentSource}
+      />
     </ArticleLayout>
   );
 };

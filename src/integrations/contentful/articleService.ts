@@ -1,8 +1,9 @@
 
-import { contentfulClient, CONTENT_TYPE_ARTICLE } from './client';
+import { contentfulClient, createPreviewClient, CONTENT_TYPE_ARTICLE } from './client';
 import { ContentfulArticle, ArticleData } from './types';
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer';
 import { Entry } from 'contentful';
+import { isPreviewMode } from './vercelSourceMaps';
 
 // Transform Contentful article to our app's format
 export const transformArticle = (article: Entry<any>): ArticleData => {
@@ -22,10 +23,16 @@ export const transformArticle = (article: Entry<any>): ArticleData => {
   };
 };
 
+// Get client based on preview mode
+const getClient = () => {
+  return isPreviewMode() ? createPreviewClient() : contentfulClient;
+};
+
 // Get all articles
 export const getAllArticles = async (): Promise<ArticleData[]> => {
   try {
-    const response = await contentfulClient.getEntries({
+    const client = getClient();
+    const response = await client.getEntries({
       content_type: CONTENT_TYPE_ARTICLE,
       order: ['-sys.createdAt'] // Fix: Use array for order parameter
     });
@@ -40,7 +47,8 @@ export const getAllArticles = async (): Promise<ArticleData[]> => {
 // Get article by slug
 export const getArticleBySlug = async (slug: string): Promise<ArticleData | null> => {
   try {
-    const response = await contentfulClient.getEntries({
+    const client = getClient();
+    const response = await client.getEntries({
       content_type: CONTENT_TYPE_ARTICLE,
       'fields.slug': slug,
       limit: 1,
@@ -60,7 +68,8 @@ export const getArticleBySlug = async (slug: string): Promise<ArticleData | null
 // Get articles by category
 export const getArticlesByCategory = async (category: string): Promise<ArticleData[]> => {
   try {
-    const response = await contentfulClient.getEntries({
+    const client = getClient();
+    const response = await client.getEntries({
       content_type: CONTENT_TYPE_ARTICLE,
       'fields.category': category,
       order: ['-sys.createdAt'] // Fix: Use array for order parameter
@@ -71,4 +80,30 @@ export const getArticlesByCategory = async (category: string): Promise<ArticleDa
     console.error(`Error fetching articles in category "${category}" from Contentful:`, error);
     return [];
   }
+};
+
+/**
+ * Enable preview mode for a specific article
+ * This would be used in a server context
+ * @param req The request object
+ * @param res The response object
+ * @param slug The article slug to preview
+ */
+export const enablePreview = (req: any, res: any, slug: string) => {
+  // This is a simplified version - in a real application, you would
+  // set cookies or session data to indicate preview mode
+  res.setPreviewData({});
+  res.redirect(`/articles/${slug}?preview=true`);
+};
+
+/**
+ * Disable preview mode
+ * This would be used in a server context
+ * @param req The request object
+ * @param res The response object
+ */
+export const disablePreview = (req: any, res: any) => {
+  // In a real application, you would clear cookies or session data
+  res.clearPreviewData();
+  res.redirect('/');
 };

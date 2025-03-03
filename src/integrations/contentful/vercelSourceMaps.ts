@@ -55,3 +55,30 @@ export const applySourceMappingAttributes = (element: HTMLElement | null, entryI
   element.setAttribute('data-vercel-content-id', entryId);
   element.setAttribute('data-vercel-content-source', getContentSourceMapUrl(entryId));
 };
+
+/**
+ * Determine if the current request is in preview mode
+ * This would check for the preview token in the URL or cookies
+ * @returns boolean indicating if in preview mode
+ */
+export const isPreviewMode = (): boolean => {
+  // In a real implementation, this would check URL parameters or cookies
+  // For now, we'll return false as the default
+  if (typeof window !== 'undefined') {
+    const url = new URL(window.location.href);
+    return url.searchParams.has('preview');
+  }
+  return false;
+};
+
+/**
+ * Get the preview secret from the URL if present
+ * @returns the preview secret or null
+ */
+export const getPreviewSecret = (): string | null => {
+  if (typeof window !== 'undefined') {
+    const url = new URL(window.location.href);
+    return url.searchParams.get('secret');
+  }
+  return null;
+};
