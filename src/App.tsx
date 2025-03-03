@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -5,6 +6,17 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+
+// Article pages
+import UnderstandingCoverageTypes from "./pages/articles/UnderstandingCoverageTypes";
+import LowerPremium from "./pages/articles/LowerPremium";
+import AfterAccident from "./pages/articles/AfterAccident";
+import ComprehensiveVsCollision from "./pages/articles/ComprehensiveVsCollision";
+import LiabilityCoverage from "./pages/articles/LiabilityCoverage";
+import UninsuredMotorist from "./pages/articles/UninsuredMotorist";
+import InsuranceDiscounts from "./pages/articles/InsuranceDiscounts";
+import TelematicsSavings from "./pages/articles/TelematicsSavings";
+import BundleSave from "./pages/articles/BundleSave";
 
 const queryClient = new QueryClient();
 
@@ -16,6 +28,18 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          
+          {/* Article Routes */}
+          <Route path="/articles/understanding-coverage-types" element={<UnderstandingCoverageTypes />} />
+          <Route path="/articles/lower-premium" element={<LowerPremium />} />
+          <Route path="/articles/after-accident" element={<AfterAccident />} />
+          <Route path="/articles/comprehensive-vs-collision" element={<ComprehensiveVsCollision />} />
+          <Route path="/articles/liability-coverage" element={<LiabilityCoverage />} />
+          <Route path="/articles/uninsured-motorist" element={<UninsuredMotorist />} />
+          <Route path="/articles/insurance-discounts" element={<InsuranceDiscounts />} />
+          <Route path="/articles/telematics-savings" element={<TelematicsSavings />} />
+          <Route path="/articles/bundle-save" element={<BundleSave />} />
+          
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

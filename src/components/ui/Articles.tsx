@@ -3,6 +3,7 @@ import { useState } from "react";
 import { ChevronDown, Book } from "lucide-react";
 import AnimatedCard from "./AnimatedCard";
 import { cn } from "@/lib/utils";
+import { Link } from "react-router-dom";
 
 const Articles = () => {
   const [openCategory, setOpenCategory] = useState<string | null>("popular");
@@ -92,20 +93,20 @@ const Articles = () => {
               >
                 <div className="p-4 space-y-2">
                   {category.articles.map((article) => (
-                    <a
+                    <Link
                       key={article.title}
-                      href={article.href}
+                      to={article.href}
                       className="block p-2 hover:bg-insurance-blue/5 rounded-md text-insurance-gray-dark hover:text-insurance-blue transition-colors"
                     >
                       {article.title}
-                    </a>
+                    </Link>
                   ))}
-                  <a
-                    href={`/categories/${category.id}`}
+                  <Link
+                    to={`/categories/${category.id}`}
                     className="block mt-4 text-insurance-blue font-medium text-sm hover:underline"
                   >
                     View all articles →
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>

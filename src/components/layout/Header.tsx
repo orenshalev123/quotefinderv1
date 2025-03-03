@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -35,19 +36,19 @@ const Header = () => {
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center">
-          <a href="/" className="text-xl font-bold text-insurance-gray-dark">
+          <Link to="/" className="text-xl font-bold text-insurance-gray-dark">
             QuoteFinder.io
-          </a>
+          </Link>
         </div>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
-          <a
-            href="/"
+          <Link
+            to="/"
             className="text-insurance-gray-dark hover:text-insurance-blue transition-colors font-medium"
           >
             Home
-          </a>
+          </Link>
           
           {/* Articles Dropdown */}
           <div className="relative">
@@ -66,18 +67,18 @@ const Header = () => {
             )}
           </div>
           
-          <a
-            href="#about"
+          <Link
+            to="#about"
             className="text-insurance-gray-dark hover:text-insurance-blue transition-colors font-medium"
           >
             About Us
-          </a>
-          <a
-            href="#contact"
+          </Link>
+          <Link
+            to="#contact"
             className="text-insurance-gray-dark hover:text-insurance-blue transition-colors font-medium"
           >
             Contact
-          </a>
+          </Link>
           <Button>Get a Quote</Button>
         </nav>
 
@@ -98,12 +99,12 @@ const Header = () => {
       {isMobileMenuOpen && (
         <div className="md:hidden absolute top-full left-0 right-0 bg-white shadow-md animate-fade-in py-4 px-6">
           <nav className="flex flex-col space-y-4">
-            <a
-              href="/"
+            <Link
+              to="/"
               className="text-insurance-gray-dark hover:text-insurance-blue transition-colors font-medium py-2"
             >
               Home
-            </a>
+            </Link>
             
             {/* Mobile Articles Dropdown */}
             <div>
@@ -122,18 +123,18 @@ const Header = () => {
               )}
             </div>
             
-            <a
-              href="#about"
+            <Link
+              to="#about"
               className="text-insurance-gray-dark hover:text-insurance-blue transition-colors font-medium py-2"
             >
               About Us
-            </a>
-            <a
-              href="#contact"
+            </Link>
+            <Link
+              to="#contact"
               className="text-insurance-gray-dark hover:text-insurance-blue transition-colors font-medium py-2"
             >
               Contact
-            </a>
+            </Link>
             <Button className="w-full">Get a Quote</Button>
           </nav>
         </div>
@@ -154,16 +155,16 @@ const ArticleLinks = ({ isMobile = false }: { isMobile?: boolean }) => {
   return (
     <>
       {articles.map((article) => (
-        <a
+        <Link
           key={article.title}
-          href={article.href}
+          to={article.href}
           className={cn(
             "block hover:bg-insurance-blue/10 text-insurance-gray-dark hover:text-insurance-blue transition-colors",
             isMobile ? "py-1" : "px-4 py-2"
           )}
         >
           {article.title}
-        </a>
+        </Link>
       ))}
     </>
   );
