@@ -1,14 +1,36 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isArticlesOpen, setIsArticlesOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const location = useLocation();
+
+  // Close articles dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsArticlesOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Close dropdown when route changes
+  useEffect(() => {
+    setIsArticlesOpen(false);
+    setIsMobileMenuOpen(false);
+  }, [location.pathname]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -30,13 +52,13 @@ const Header = () => {
       className={cn(
         "fixed w-full top-0 z-50 transition-all duration-300 py-4 px-6",
         isScrolled
-          ? "bg-white/80 backdrop-blur-md shadow-sm"
+          ? "bg-white/90 backdrop-blur-md shadow-sm"
           : "bg-transparent"
       )}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center">
-          <Link to="/" className="text-xl font-bold text-insurance-gray-dark">
+          <Link to="/" className="text-xl font-bold text-insurance-blue">
             QuoteFinder.io
           </Link>
         </div>
@@ -45,7 +67,10 @@ const Header = () => {
         <nav className="hidden md:flex items-center space-x-8">
           <Link
             to="/"
-            className="text-insurance-gray-dark hover:text-insurance-blue transition-colors font-medium"
+            className={cn(
+              "text-insurance-gray-dark hover:text-insurance-blue transition-colors font-medium",
+              location.pathname === "/" && "text-insurance-blue"
+            )}
           >
             Home
           </Link>
@@ -53,23 +78,29 @@ const Header = () => {
           {/* Articles Link */}
           <Link
             to="/articles"
-            className="text-insurance-gray-dark hover:text-insurance-blue transition-colors font-medium"
+            className={cn(
+              "text-insurance-gray-dark hover:text-insurance-blue transition-colors font-medium",
+              location.pathname.includes("/articles") && "text-insurance-blue"
+            )}
           >
             Articles
           </Link>
           
           {/* Articles Dropdown */}
-          <div className="relative">
+          <div className="relative" ref={dropdownRef}>
             <button 
               onClick={() => setIsArticlesOpen(!isArticlesOpen)}
               className="flex items-center text-insurance-gray-dark hover:text-insurance-blue transition-colors font-medium"
             >
               Categories
-              <ChevronDown className="ml-1 h-4 w-4" />
+              <ChevronDown className={cn(
+                "ml-1 h-4 w-4 transition-transform duration-200",
+                isArticlesOpen && "transform rotate-180"
+              )} />
             </button>
             
             {isArticlesOpen && (
-              <div className="absolute top-full left-0 mt-2 w-64 bg-white shadow-lg rounded-lg py-2 z-50">
+              <div className="absolute top-full left-0 mt-2 w-64 bg-white shadow-lg rounded-lg py-2 z-50 animate-fade-in">
                 <ArticleLinks />
               </div>
             )}
@@ -87,7 +118,7 @@ const Header = () => {
           >
             Contact
           </Link>
-          <Button>Get a Quote</Button>
+          <Button className="bg-insurance-blue hover:bg-insurance-blue-dark">Get a Quote</Button>
         </nav>
 
         {/* Mobile Menu Button */}
@@ -109,7 +140,10 @@ const Header = () => {
           <nav className="flex flex-col space-y-4">
             <Link
               to="/"
-              className="text-insurance-gray-dark hover:text-insurance-blue transition-colors font-medium py-2"
+              className={cn(
+                "text-insurance-gray-dark hover:text-insurance-blue transition-colors font-medium py-2",
+                location.pathname === "/" && "text-insurance-blue"
+              )}
             >
               Home
             </Link>
@@ -117,7 +151,10 @@ const Header = () => {
             {/* Mobile Articles Link */}
             <Link
               to="/articles"
-              className="text-insurance-gray-dark hover:text-insurance-blue transition-colors font-medium py-2"
+              className={cn(
+                "text-insurance-gray-dark hover:text-insurance-blue transition-colors font-medium py-2",
+                location.pathname.includes("/articles") && "text-insurance-blue"
+              )}
             >
               Articles
             </Link>
@@ -129,11 +166,14 @@ const Header = () => {
                 className="flex items-center text-insurance-gray-dark hover:text-insurance-blue transition-colors font-medium py-2 w-full text-left"
               >
                 Categories
-                <ChevronDown className="ml-1 h-4 w-4" />
+                <ChevronDown className={cn(
+                  "ml-1 h-4 w-4 transition-transform duration-200",
+                  isArticlesOpen && "transform rotate-180"
+                )} />
               </button>
               
               {isArticlesOpen && (
-                <div className="pl-4 py-2 space-y-2">
+                <div className="pl-4 py-2 space-y-2 border-l-2 border-insurance-blue/20 ml-2">
                   <ArticleLinks isMobile />
                 </div>
               )}
@@ -151,7 +191,7 @@ const Header = () => {
             >
               Contact
             </Link>
-            <Button className="w-full">Get a Quote</Button>
+            <Button className="w-full bg-insurance-blue hover:bg-insurance-blue-dark">Get a Quote</Button>
           </nav>
         </div>
       )}

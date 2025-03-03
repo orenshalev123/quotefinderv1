@@ -20,18 +20,21 @@ const ArticleHeader = ({
   return (
     <header className="border-b border-gray-200 px-8 pt-8 pb-6">
       {category && (
-        <span className="inline-block text-sm font-medium text-insurance-blue bg-insurance-blue/10 px-3 py-1 rounded-full mb-3">
+        <Link 
+          to={`/categories/${category.toLowerCase().replace(/\s+/g, '-')}`}
+          className="inline-block text-sm font-medium text-insurance-blue bg-insurance-blue/10 px-3 py-1 rounded-full mb-4 hover:bg-insurance-blue/20 transition-colors"
+        >
           {category}
-        </span>
+        </Link>
       )}
       <h1 className="text-3xl md:text-4xl font-bold text-insurance-gray-dark mb-4 leading-tight">
         {title}
       </h1>
       
-      <div className="flex flex-wrap items-center text-insurance-gray text-sm mb-4 gap-y-2">
+      <div className="flex flex-wrap items-center text-insurance-gray text-sm mb-6 gap-y-3">
         <div className="flex items-center mr-6">
           <User className="h-4 w-4 mr-2 text-insurance-blue" />
-          <span>By {author}</span>
+          <span className="font-medium">By {author}</span>
         </div>
         <div className="flex items-center mr-6">
           <Calendar className="h-4 w-4 mr-2 text-insurance-blue" />
