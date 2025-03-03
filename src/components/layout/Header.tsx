@@ -11,7 +11,6 @@ const Header = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
 
-  // Close articles dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -25,7 +24,6 @@ const Header = () => {
     };
   }, []);
 
-  // Close dropdown when route changes
   useEffect(() => {
     setIsArticlesOpen(false);
     setIsMobileMenuOpen(false);
@@ -49,20 +47,19 @@ const Header = () => {
   return (
     <header
       className={cn(
-        "fixed w-full top-0 z-50 transition-all duration-300 py-4 px-6",
+        "fixed w-full top-0 z-50 transition-all duration-300 py-4",
         isScrolled
           ? "bg-white/95 backdrop-blur-md shadow-sm"
           : "bg-white shadow-sm"
       )}
     >
-      <div className="max-w-7xl mx-auto flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
         <div className="flex items-center">
           <Link to="/" className="text-xl font-bold text-insurance-blue">
             QuoteFinder.io
           </Link>
         </div>
 
-        {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
           <Link
             to="/"
@@ -74,7 +71,6 @@ const Header = () => {
             Home
           </Link>
           
-          {/* Articles Link */}
           <Link
             to="/articles"
             className={cn(
@@ -85,7 +81,6 @@ const Header = () => {
             Articles
           </Link>
           
-          {/* Articles Dropdown */}
           <div className="relative" ref={dropdownRef}>
             <button 
               onClick={() => setIsArticlesOpen(!isArticlesOpen)}
@@ -120,7 +115,6 @@ const Header = () => {
           <Button className="bg-insurance-blue hover:bg-insurance-blue-dark">Get a Quote</Button>
         </nav>
 
-        {/* Mobile Menu Button */}
         <button
           className="md:hidden text-insurance-gray-dark"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -133,7 +127,6 @@ const Header = () => {
         </button>
       </div>
 
-      {/* Mobile Navigation */}
       {isMobileMenuOpen && (
         <div className="md:hidden absolute top-full left-0 right-0 bg-white shadow-md animate-fade-in py-4 px-6 z-50">
           <nav className="flex flex-col space-y-4">
@@ -147,7 +140,6 @@ const Header = () => {
               Home
             </Link>
             
-            {/* Mobile Articles Link */}
             <Link
               to="/articles"
               className={cn(
@@ -158,7 +150,6 @@ const Header = () => {
               Articles
             </Link>
             
-            {/* Mobile Articles Dropdown */}
             <div>
               <button 
                 onClick={() => setIsArticlesOpen(!isArticlesOpen)}
