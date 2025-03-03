@@ -177,24 +177,45 @@ const ArticleLayout = ({
                   prose-p:text-insurance-gray-dark 
                   prose-p:my-6 
                   prose-p:leading-relaxed
+                  prose-p:text-base
+                  prose-p:tracking-wide
+                  prose-p:max-w-prose
                   prose-li:text-insurance-gray-dark 
                   prose-li:my-2
+                  prose-li:text-base
+                  prose-li:leading-relaxed
                   prose-ul:my-6 
                   prose-ul:pl-6
+                  prose-ul:space-y-2
+                  prose-ol:my-6
+                  prose-ol:pl-6
+                  prose-ol:space-y-2
                   prose-a:text-insurance-blue 
                   prose-a:no-underline 
+                  prose-a:font-medium
                   hover:prose-a:underline
                   prose-strong:font-semibold
                   prose-strong:text-insurance-gray-dark
+                  prose-blockquote:border-l-4
+                  prose-blockquote:border-insurance-blue-light
+                  prose-blockquote:pl-4
+                  prose-blockquote:py-1
+                  prose-blockquote:my-6
+                  prose-blockquote:italic
+                  prose-blockquote:text-insurance-gray-dark
+                  prose-blockquote:bg-gray-50
                   prose-table:border-collapse
                   prose-table:w-full
                   prose-table:my-8
                   prose-th:bg-gray-50
                   prose-th:text-left
                   prose-th:p-3
+                  prose-th:font-semibold
                   prose-td:p-3
                   prose-td:border-t
                   prose-td:border-gray-100
+                  prose-hr:my-8
+                  prose-hr:border-gray-100
                 ">
                   {children}
                 </div>
