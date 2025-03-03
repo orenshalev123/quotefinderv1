@@ -1,73 +1,54 @@
-
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
-import Articles from "./pages/Articles";
-import ContentfulArticle from "./components/contentful/ContentfulArticle";
-import SanityArticle from "./components/sanity/SanityArticle";
-import PreviewPage from "./pages/api/preview";
-import QuoteFinderArticle from "./pages/articles/QuoteFinderArticle";
+import './App.css';
 
-// Keep static article pages for fallback
-import UnderstandingCoverageTypes from "./pages/articles/UnderstandingCoverageTypes";
-import LowerPremium from "./pages/articles/LowerPremium";
-import AfterAccident from "./pages/articles/AfterAccident";
-import ComprehensiveVsCollision from "./pages/articles/ComprehensiveVsCollision";
-import LiabilityCoverage from "./pages/articles/LiabilityCoverage";
-import UninsuredMotorist from "./pages/articles/UninsuredMotorist";
-import InsuranceDiscounts from "./pages/articles/InsuranceDiscounts";
-import TelematicsSavings from "./pages/articles/TelematicsSavings";
-import BundleSave from "./pages/articles/BundleSave";
+// Pages
+import Index from './pages/Index';
+import Articles from './pages/Articles';
+import NotFound from './pages/NotFound';
+import ContentfulArticle from './components/contentful/ContentfulArticle';
+import SanityArticle from './components/sanity/SanityArticle';
+import Studio from './pages/Studio'; // Import the new Studio page
 
-const queryClient = new QueryClient();
+// Import article pages
+// import Article1 from './pages/Article1';
+// import Article2 from './pages/Article2';
+// import Article3 from './pages/Article3';
+// import Article4 from './pages/Article4';
+// import Article5 from './pages/Article5';
+// import Article6 from './pages/Article6';
+// import Article7 from './pages/Article7';
+// import Article8 from './pages/Article8';
+// import Article9 from './pages/Article9';
+// import Article10 from './pages/Article10';
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Index />} />
+        <Route path="/articles" element={<Articles />} />
+        <Route path="/articles/:slug" element={<ContentfulArticle />} />
+        <Route path="/sanity/articles/:slug" element={<SanityArticle />} />
+        <Route path="/studio/*" element={<Studio />} /> {/* Add the Studio route */}
+        
+        {/* Individual article routes */}
+        {/* <Route path="/article1" element={<Article1 />} /> */}
+        {/* <Route path="/article2" element={<Article2 />} /> */}
+        {/* <Route path="/article3" element={<Article3 />} /> */}
+        {/* <Route path="/article4" element={<Article4 />} /> */}
+        {/* <Route path="/article5" element={<Article5 />} /> */}
+        {/* <Route path="/article6" element={<Article6 />} /> */}
+        {/* <Route path="/article7" element={<Article7 />} /> */}
+        {/* <Route path="/article8" element={<Article8 />} /> */}
+        {/* <Route path="/article9" element={<Article9 />} /> */}
+        {/* <Route path="/article10" element={<Article10 />} /> */}
+        
+        <Route path="*" element={<NotFound />} />
+      </Routes>
       <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          
-          {/* Articles Listing Page */}
-          <Route path="/articles" element={<Articles />} />
-          
-          {/* Preview API Routes */}
-          <Route path="/api/preview" element={<PreviewPage />} />
-          <Route path="/api/sanity-preview" element={<PreviewPage />} />
-          
-          {/* Dynamic Contentful Article Route */}
-          <Route path="/articles/:slug" element={<ContentfulArticle />} />
-          
-          {/* Sanity Article Route */}
-          <Route path="/sanity-articles/:slug" element={<SanityArticle />} />
-          
-          {/* QuoteFinder Article (Static, no Contentful) */}
-          <Route path="/quote-finder/:slug" element={<QuoteFinderArticle />} />
-          <Route path="/quote-finder" element={<QuoteFinderArticle />} />
-          
-          {/* Legacy Static Article Routes (for fallback) */}
-          <Route path="/articles/understanding-coverage-types" element={<UnderstandingCoverageTypes />} />
-          <Route path="/articles/lower-premium" element={<LowerPremium />} />
-          <Route path="/articles/after-accident" element={<AfterAccident />} />
-          <Route path="/articles/comprehensive-vs-collision" element={<ComprehensiveVsCollision />} />
-          <Route path="/articles/liability-coverage" element={<LiabilityCoverage />} />
-          <Route path="/articles/uninsured-motorist" element={<UninsuredMotorist />} />
-          <Route path="/articles/insurance-discounts" element={<InsuranceDiscounts />} />
-          <Route path="/articles/telematics-savings" element={<TelematicsSavings />} />
-          <Route path="/articles/bundle-save" element={<BundleSave />} />
-          
-          {/* Catch-all route */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+    </Router>
+  );
+}
 
 export default App;
