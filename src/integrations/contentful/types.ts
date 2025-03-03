@@ -40,6 +40,8 @@ export interface QuoteFinderContent {
   };
   fields: {
     Articles: Document;
+    title?: string;  // Added title field
+    slug?: string;   // Added slug field
   };
 }
 
@@ -59,4 +61,3 @@ export interface ArticleData {
     vercelContentSource: string;
   };
 }
-

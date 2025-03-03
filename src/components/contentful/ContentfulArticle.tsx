@@ -26,10 +26,12 @@ const ContentfulArticle = () => {
         
         if (!articleData) {
           setError('Article not found');
+          console.error(`Article with slug "${slug}" not found`);
         } else {
           // Add source mapping to the article for Vercel's Visual Editing
           const articleWithSourceMap = addSourceMapping(articleData);
           setArticle(articleWithSourceMap);
+          console.log('Article loaded:', articleWithSourceMap);
           
           // Add Vercel metadata tags to the document head
           addVercelMetaTags(articleWithSourceMap.id);

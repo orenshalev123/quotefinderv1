@@ -27,10 +27,14 @@ export const transformArticle = (article: Entry<any>): ArticleData => {
 export const transformQuoteFinderContent = (entry: Entry<any>): ArticleData => {
   const fields = entry.fields as QuoteFinderContent['fields'];
   
+  // Extract a better title if possible from the entry ID or sys info
+  const title = fields.title || `QuoteFinder Article: ${entry.sys.id}`;
+  const slug = fields.slug || entry.sys.id;
+  
   return {
     id: entry.sys.id,
-    title: "QuoteFinder Article", // You may want to extract this from the content
-    slug: entry.sys.id, // Using the entry ID as slug
+    title: title,
+    slug: slug,
     category: "Insurance",
     date: new Date().toISOString().split('T')[0],
     author: "QuoteFinder",
@@ -101,7 +105,7 @@ export const getArticleBySlug = async (slug: string): Promise<ArticleData | null
     // If not found, check if it's a QuoteFinder entry
     const quoteFinderResponse = await client.getEntries({
       content_type: CONTENT_TYPE_QUOTE_FINDER,
-      'sys.id': slug, // Using ID as slug for QuoteFinder content
+      'sys.id': slug, // Try using ID as slug for QuoteFinder content
       limit: 1,
     }).catch(error => {
       console.log('Error fetching QuoteFinder by ID:', error);
@@ -110,6 +114,20 @@ export const getArticleBySlug = async (slug: string): Promise<ArticleData | null
     
     if (quoteFinderResponse.items.length > 0) {
       return transformQuoteFinderContent(quoteFinderResponse.items[0]);
+    }
+    
+    // If still not found, try searching by slug in QuoteFinder entries
+    const quoteFinderBySlugResponse = await client.getEntries({
+      content_type: CONTENT_TYPE_QUOTE_FINDER,
+      'fields.slug': slug, // Try using slug field if it exists
+      limit: 1,
+    }).catch(error => {
+      console.log('Error fetching QuoteFinder by slug:', error);
+      return { items: [] };
+    });
+    
+    if (quoteFinderBySlugResponse.items.length > 0) {
+      return transformQuoteFinderContent(quoteFinderBySlugResponse.items[0]);
     }
 
     return null;
