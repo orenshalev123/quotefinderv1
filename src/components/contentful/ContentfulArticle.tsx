@@ -6,7 +6,7 @@ import { addSourceMapping, isPreviewMode } from '@/integrations/contentful/verce
 import ArticleLayout from '@/components/layout/ArticleLayout';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import { BadgeAlert } from 'lucide-react';
+import { BadgeAlert, Info } from 'lucide-react';
 
 const ContentfulArticle = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -23,6 +23,8 @@ const ContentfulArticle = () => {
       
       try {
         setLoading(true);
+        console.log(`Fetching article with slug: ${slug}, content type: ${contentType}, preview: ${preview}`);
+        
         const articleData = await getArticleBySlug(slug, contentType);
         
         if (!articleData) {
@@ -32,7 +34,7 @@ const ContentfulArticle = () => {
           // Add source mapping to the article for Vercel's Visual Editing
           const articleWithSourceMap = addSourceMapping(articleData);
           setArticle(articleWithSourceMap);
-          console.log('Article loaded:', articleWithSourceMap);
+          console.log('Article loaded successfully:', articleWithSourceMap);
           
           // Add Vercel metadata tags to the document head
           addVercelMetaTags(articleWithSourceMap.id);
@@ -85,7 +87,23 @@ const ContentfulArticle = () => {
   }
 
   if (error || !article) {
-    return <Navigate to="/not-found" replace />;
+    return (
+      <ArticleLayout title="Article Not Found">
+        <Alert variant="destructive" className="mb-6">
+          <Info className="h-4 w-4" />
+          <AlertTitle>Error Loading Article</AlertTitle>
+          <AlertDescription>
+            {error || "The requested article could not be found. It may have been removed or the URL is incorrect."}
+            <p className="mt-2">Details: slug={slug}, contentType={contentType}, preview={preview.toString()}</p>
+          </AlertDescription>
+        </Alert>
+        <div className="mt-4">
+          <a href="/" className="text-blue-500 hover:text-blue-700 underline">
+            Return to Home
+          </a>
+        </div>
+      </ArticleLayout>
+    );
   }
 
   return (
@@ -102,6 +120,7 @@ const ContentfulArticle = () => {
           <AlertTitle>Preview Mode</AlertTitle>
           <AlertDescription>
             You are viewing this article in preview mode. Some content may not be published yet.
+            <p className="mt-1 text-sm">Content Type: {contentType}, ID: {article.id}</p>
           </AlertDescription>
         </Alert>
       )}

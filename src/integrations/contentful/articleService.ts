@@ -1,3 +1,4 @@
+
 import { contentfulClient, createPreviewClient, CONTENT_TYPE_ARTICLE, CONTENT_TYPE_QUOTE_FINDER } from './client';
 import { ContentfulArticle, ArticleData, QuoteFinderContent } from './types';
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer';
@@ -29,6 +30,9 @@ export const transformQuoteFinderContent = (entry: Entry<any>): ArticleData => {
   // Extract a better title if possible from the entry ID or sys info
   const title = fields.title || `QuoteFinder Article: ${entry.sys.id}`;
   const slug = fields.slug || entry.sys.id;
+  
+  console.log('QuoteFinder content fields:', fields);
+  console.log('QuoteFinder entry sys:', entry.sys);
   
   return {
     id: entry.sys.id,
@@ -86,6 +90,19 @@ export const getAllArticles = async (): Promise<ArticleData[]> => {
 export const getArticleBySlug = async (slug: string, contentType: string = 'article'): Promise<ArticleData | null> => {
   try {
     const client = getClient();
+    console.log(`Fetching ${contentType} with slug/ID: "${slug}"`);
+    
+    if (contentType === 'quoteFinder') {
+      // For quoteFinder, first try to fetch by entry ID directly
+      try {
+        const entry = await client.getEntry(slug);
+        console.log('Found entry by ID:', entry);
+        return transformQuoteFinderContent(entry);
+      } catch (error) {
+        console.log('Error fetching by entry ID:', error);
+        // If not found by ID, continue with the regular logic below
+      }
+    }
     
     // Try to find it as a standard article first
     const articleResponse = await client.getEntries({
@@ -98,6 +115,7 @@ export const getArticleBySlug = async (slug: string, contentType: string = 'arti
     });
 
     if (articleResponse.items.length > 0) {
+      console.log('Found article by slug:', articleResponse.items[0]);
       return transformArticle(articleResponse.items[0]);
     }
     
@@ -112,6 +130,7 @@ export const getArticleBySlug = async (slug: string, contentType: string = 'arti
     });
     
     if (quoteFinderResponse.items.length > 0) {
+      console.log('Found quoteFinder by ID:', quoteFinderResponse.items[0]);
       return transformQuoteFinderContent(quoteFinderResponse.items[0]);
     }
     
@@ -126,12 +145,14 @@ export const getArticleBySlug = async (slug: string, contentType: string = 'arti
     });
     
     if (quoteFinderBySlugResponse.items.length > 0) {
+      console.log('Found quoteFinder by slug:', quoteFinderBySlugResponse.items[0]);
       return transformQuoteFinderContent(quoteFinderBySlugResponse.items[0]);
     }
 
+    console.log(`Content with slug/ID "${slug}" not found in Contentful`);
     return null;
   } catch (error) {
-    console.error(`Error fetching article with slug "${slug}" from Contentful:`, error);
+    console.error(`Error fetching content with slug/ID "${slug}" from Contentful:`, error);
     return null;
   }
 };
