@@ -8,7 +8,7 @@ export default defineConfig({
   name: 'quotefinder-studio',
   title: 'QuoteFinder Content Studio',
   
-  projectId: import.meta.env.VITE_SANITY_PROJECT_ID || 'your-project-id',
+  projectId: import.meta.env.VITE_SANITY_PROJECT_ID || 'ftchwehh',
   dataset: import.meta.env.VITE_SANITY_DATASET || 'production',
   
   plugins: [
