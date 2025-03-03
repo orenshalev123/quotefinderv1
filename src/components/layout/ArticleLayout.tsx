@@ -131,35 +131,48 @@ const ArticleLayout = ({
                     prose-h1:border-b
                     prose-h1:pb-4
                     prose-h1:mb-6
+                    
                     prose-h2:text-xl
                     prose-h2:font-bold
-                    prose-h2:mt-8 
+                    prose-h2:mt-10
                     prose-h2:mb-4
+                    prose-h2:pb-1
+                    prose-h2:border-b
+                    prose-h2:border-gray-200
                     prose-h2:text-insurance-blue-dark
+                    
                     prose-h3:text-lg
                     prose-h3:font-bold
                     prose-h3:mt-6
                     prose-h3:mb-3
-                    prose-p:text-insurance-gray-dark 
-                    prose-p:my-4
+                    prose-h3:text-insurance-gray-dark
+                    
+                    prose-p:text-insurance-gray-dark
+                    prose-p:my-5
                     prose-p:leading-relaxed
                     prose-p:text-base
+                    
                     prose-li:text-insurance-gray-dark 
                     prose-li:my-1
                     prose-li:text-base
                     prose-li:leading-relaxed
-                    prose-ul:my-4
+                    
+                    prose-ul:my-5
                     prose-ul:pl-5
                     prose-ul:list-disc
-                    prose-ol:my-4
+                    
+                    prose-ol:my-5
                     prose-ol:pl-5
                     prose-ol:list-decimal
+                    
                     prose-a:text-insurance-blue 
                     prose-a:no-underline 
                     prose-a:font-medium
                     hover:prose-a:underline
+                    
                     prose-strong:font-semibold
                     prose-strong:text-insurance-gray-dark
+                    
                     prose-blockquote:border-l-4
                     prose-blockquote:border-insurance-blue-light
                     prose-blockquote:pl-4
@@ -168,19 +181,23 @@ const ArticleLayout = ({
                     prose-blockquote:italic
                     prose-blockquote:text-insurance-gray-dark
                     prose-blockquote:bg-gray-50
+                    
                     prose-table:border
                     prose-table:border-collapse
                     prose-table:w-full
                     prose-table:my-6
+                    
                     prose-th:bg-gray-100
                     prose-th:text-left
                     prose-th:p-2
                     prose-th:font-semibold
                     prose-th:border
                     prose-th:border-gray-300
+                    
                     prose-td:p-2
                     prose-td:border
                     prose-td:border-gray-300
+                    
                     prose-hr:my-8
                     prose-hr:border-gray-200
                   ">
@@ -190,43 +207,52 @@ const ArticleLayout = ({
                 
                 {/* Article Footer - Social Sharing */}
                 <div className="border-t border-gray-200 px-6 py-4 bg-gray-50">
-                  <div className="flex items-center flex-wrap gap-2">
-                    <span className="text-sm text-insurance-gray-dark font-medium mr-2">Share:</span>
-                    <button 
-                      onClick={() => handleShare("Facebook")}
-                      className="text-blue-600 hover:bg-blue-100 p-1.5 rounded-full transition-colors" 
-                      aria-label="Share on Facebook"
-                    >
-                      <Facebook className="h-4 w-4" />
-                    </button>
-                    <button 
-                      onClick={() => handleShare("Twitter")}
-                      className="text-sky-500 hover:bg-sky-100 p-1.5 rounded-full transition-colors" 
-                      aria-label="Share on Twitter"
-                    >
-                      <Twitter className="h-4 w-4" />
-                    </button>
-                    <button 
-                      onClick={() => handleShare("LinkedIn")}
-                      className="text-blue-700 hover:bg-blue-100 p-1.5 rounded-full transition-colors" 
-                      aria-label="Share on LinkedIn"
-                    >
-                      <Linkedin className="h-4 w-4" />
-                    </button>
-                    <button 
-                      onClick={() => handleShare("Email")}
-                      className="text-red-500 hover:bg-red-100 p-1.5 rounded-full transition-colors" 
-                      aria-label="Email"
-                    >
-                      <Mail className="h-4 w-4" />
-                    </button>
-                    <button 
-                      onClick={() => handleShare("Print")}
-                      className="text-gray-700 hover:bg-gray-100 p-1.5 rounded-full transition-colors" 
-                      aria-label="Print"
-                    >
-                      <Printer className="h-4 w-4" />
-                    </button>
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
+                    <div className="mb-3 sm:mb-0">
+                      <span className="text-sm text-insurance-gray-dark font-medium mr-2">Share this article:</span>
+                    </div>
+                    <div className="flex items-center flex-wrap gap-2">
+                      <button 
+                        onClick={() => handleShare("Facebook")}
+                        className="text-blue-600 hover:bg-blue-100 p-2 rounded-full transition-colors flex items-center text-sm" 
+                        aria-label="Share on Facebook"
+                      >
+                        <Facebook className="h-4 w-4 mr-1" />
+                        <span>Facebook</span>
+                      </button>
+                      <button 
+                        onClick={() => handleShare("Twitter")}
+                        className="text-sky-500 hover:bg-sky-100 p-2 rounded-full transition-colors flex items-center text-sm" 
+                        aria-label="Share on Twitter"
+                      >
+                        <Twitter className="h-4 w-4 mr-1" />
+                        <span>Twitter</span>
+                      </button>
+                      <button 
+                        onClick={() => handleShare("LinkedIn")}
+                        className="text-blue-700 hover:bg-blue-100 p-2 rounded-full transition-colors flex items-center text-sm" 
+                        aria-label="Share on LinkedIn"
+                      >
+                        <Linkedin className="h-4 w-4 mr-1" />
+                        <span>LinkedIn</span>
+                      </button>
+                      <button 
+                        onClick={() => handleShare("Email")}
+                        className="text-red-500 hover:bg-red-100 p-2 rounded-full transition-colors flex items-center text-sm" 
+                        aria-label="Email"
+                      >
+                        <Mail className="h-4 w-4 mr-1" />
+                        <span>Email</span>
+                      </button>
+                      <button 
+                        onClick={() => handleShare("Print")}
+                        className="text-gray-700 hover:bg-gray-100 p-2 rounded-full transition-colors flex items-center text-sm" 
+                        aria-label="Print"
+                      >
+                        <Printer className="h-4 w-4 mr-1" />
+                        <span>Print</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </article>
