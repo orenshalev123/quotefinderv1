@@ -29,6 +29,10 @@ export default defineConfig(({ mode }) => {
       'process.env.CONTENTFUL_SPACE_ID': JSON.stringify(env.CONTENTFUL_SPACE_ID || '9ohibvmav2q6'),
       'process.env.CONTENTFUL_ACCESS_TOKEN': JSON.stringify(env.CONTENTFUL_ACCESS_TOKEN || 'jQeUyyAvnIvppIc41r4dGL2hnfnUy8uIiTDjFcSKRGc'),
       'process.env.CONTENTFUL_PREVIEW_ACCESS_TOKEN': JSON.stringify(env.CONTENTFUL_PREVIEW_ACCESS_TOKEN || 'GqVPWPDsrZgZ66u5Ox1uHxJ3ZIx0PO6cAvbcvHpvAqc'),
+      'process.env.VITE_SANITY_PROJECT_ID': JSON.stringify(env.VITE_SANITY_PROJECT_ID),
+      'process.env.VITE_SANITY_DATASET': JSON.stringify(env.VITE_SANITY_DATASET),
+      'process.env.VITE_SANITY_API_VERSION': JSON.stringify(env.VITE_SANITY_API_VERSION),
+      'process.env.VITE_SANITY_TOKEN': JSON.stringify(env.VITE_SANITY_TOKEN),
     }
   };
 });
