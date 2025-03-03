@@ -7,6 +7,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { Skeleton } from "@/components/ui/skeleton";
 import AnimatedCard from "@/components/ui/AnimatedCard";
+import { UserPlus, Newspaper, Clock } from "lucide-react";
 
 // Define the image mapping for articles
 const articleImages: Record<string, string> = {
@@ -78,12 +79,19 @@ const ArticleCard = ({ article, index }: { article: ArticleData; index: number }
 const Articles = () => {
   const [articles, setArticles] = useState<ArticleData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [featuredArticle, setFeaturedArticle] = useState<ArticleData | null>(null);
   
   useEffect(() => {
     const fetchArticles = async () => {
       try {
         const data = await getAllArticles();
-        setArticles(data);
+        // Set the first article as featured (could be made smarter with a tag in Contentful)
+        if (data.length > 0) {
+          setFeaturedArticle(data[0]);
+          setArticles(data);
+        } else {
+          setArticles(data);
+        }
       } catch (error) {
         console.error("Error fetching articles:", error);
       } finally {
@@ -129,11 +137,69 @@ const Articles = () => {
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {articles.map((article, index) => (
-                <ArticleCard key={article.id} article={article} index={index} />
-              ))}
-            </div>
+            <>
+              {/* Featured Article - First in the list */}
+              {featuredArticle && (
+                <div className="mb-12">
+                  <h2 className="text-2xl font-semibold mb-6 text-insurance-gray-dark border-b pb-2 border-insurance-blue/20">
+                    Featured Article
+                  </h2>
+                  <AnimatedCard direction="up" className="bg-white rounded-xl shadow-sm overflow-hidden">
+                    <div className="grid grid-cols-1 md:grid-cols-2 h-full">
+                      <div className="h-full bg-insurance-gray-lightest">
+                        <img 
+                          src={featuredArticle.featuredImage || getArticleImage(featuredArticle.slug)}
+                          alt={featuredArticle.title}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="p-6 md:p-8 flex flex-col">
+                        <div className="mb-4 flex items-center justify-between">
+                          <span className="text-sm font-medium text-insurance-blue bg-insurance-blue/10 px-3 py-1 rounded-full">
+                            {featuredArticle.category}
+                          </span>
+                          <span className="text-sm text-insurance-gray">{formatDate(featuredArticle.date)}</span>
+                        </div>
+                        <h3 className="text-2xl font-bold mb-4 text-insurance-gray-dark">
+                          {featuredArticle.title}
+                        </h3>
+                        <p className="text-insurance-gray mb-6 flex-1">
+                          {featuredArticle.excerpt || `Learn more about ${featuredArticle.title.toLowerCase()}...`}
+                        </p>
+                        <div className="mt-auto">
+                          <div className="flex items-center text-insurance-gray text-sm mb-4">
+                            <div className="flex items-center mr-6">
+                              <UserPlus className="h-4 w-4 mr-2 text-insurance-blue" />
+                              <span>{featuredArticle.author}</span>
+                            </div>
+                            <div className="flex items-center">
+                              <Clock className="h-4 w-4 mr-2 text-insurance-blue" />
+                              <span>{featuredArticle.readTime || "5 min read"}</span>
+                            </div>
+                          </div>
+                          <Link 
+                            to={`/articles/${featuredArticle.slug}`}
+                            className="inline-block py-2 px-6 bg-insurance-blue text-white rounded-full hover:bg-insurance-blue-dark transition-colors"
+                          >
+                            Read Full Article
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  </AnimatedCard>
+                </div>
+              )}
+              
+              {/* All Articles Grid */}
+              <h2 className="text-2xl font-semibold mb-6 text-insurance-gray-dark border-b pb-2 border-insurance-blue/20">
+                All Articles
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {articles.map((article, index) => (
+                  <ArticleCard key={article.id} article={article} index={index} />
+                ))}
+              </div>
+            </>
           )}
         </div>
       </main>
