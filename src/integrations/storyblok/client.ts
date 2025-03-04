@@ -28,7 +28,6 @@ export const createPreviewClient = () => {
       type: 'memory'
     },
     // Enable draft mode when in preview
-    region: 'us',
-    version: 'draft'
+    region: 'us'
   });
 };
