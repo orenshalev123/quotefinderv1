@@ -1,8 +1,8 @@
 
 import { storyblokClient, createPreviewClient, isPreviewMode } from './client';
-import { StoryblokArticle, ArticleData } from './types';
 import { render } from 'storyblok-rich-text-react-renderer';
 import { renderToString } from 'react-dom/server';
+import { StoryblokArticle, ArticleData } from './types';
 
 // Get client based on preview mode
 const getClient = () => {
@@ -13,9 +13,7 @@ const getClient = () => {
 export const transformStoryblokArticle = (story: StoryblokArticle): ArticleData => {
   // Render rich text content to HTML
   const richTextContent = story.content.content;
-  const renderedContent = richTextContent 
-    ? renderToString(render(richTextContent))
-    : '';
+  const renderedContent = richTextContent ? renderToString(render(richTextContent)) : '';
   
   return {
     id: story.uuid,
@@ -27,7 +25,7 @@ export const transformStoryblokArticle = (story: StoryblokArticle): ArticleData 
     readTime: story.content.readTime || '5 min read',
     content: renderedContent,
     excerpt: story.content.excerpt,
-    featuredImage: story.content.featured_image?.filename,
+    featuredImage: story.content.featured_image?.filename
   };
 };
 
@@ -55,7 +53,7 @@ export const getAllStoryblokArticles = async (): Promise<ArticleData[]> => {
     
     console.log(`Found ${response.data.stories.length} Storyblok articles`);
     
-    const articles = response.data.stories.map((story: any) => {
+    const articles = response.data.stories.map((story: StoryblokArticle) => {
       const articleData = transformStoryblokArticle(story);
       return addStoryblokSourceMapping(articleData);
     });
@@ -87,7 +85,7 @@ export const getStoryblokArticleBySlug = async (slug: string): Promise<ArticleDa
     
     console.log('Found Storyblok article:', response.data.story);
     
-    const article = transformStoryblokArticle(response.data.story);
+    const article = transformStoryblokArticle(response.data.story as StoryblokArticle);
     return addStoryblokSourceMapping(article);
   } catch (error) {
     console.error(`Error fetching Storyblok article with slug "${slug}":`, error);

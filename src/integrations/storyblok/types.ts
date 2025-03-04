@@ -1,5 +1,4 @@
 
-// Define Storyblok content types
 export interface StoryblokArticle {
   id: number;
   uuid: string;
