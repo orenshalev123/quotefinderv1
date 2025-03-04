@@ -18,13 +18,22 @@ export const isSanityPreviewMode = (): boolean => {
   return false;
 };
 
-// Create the Sanity client
+// Create the Sanity client with better error handling
 export const sanityClient = createClient({
   projectId: SANITY_PROJECT_ID,
   dataset: SANITY_DATASET,
   apiVersion: SANITY_API_VERSION,
   useCdn: !isSanityPreviewMode(),
   token: isSanityPreviewMode() ? SANITY_TOKEN : undefined,
+});
+
+// Log Sanity configuration for debugging
+console.log('Sanity Configuration:', {
+  projectId: SANITY_PROJECT_ID,
+  dataset: SANITY_DATASET,
+  apiVersion: SANITY_API_VERSION,
+  isPreviewMode: isSanityPreviewMode(),
+  hasToken: !!SANITY_TOKEN
 });
 
 // Set up image URL builder

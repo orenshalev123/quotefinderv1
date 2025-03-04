@@ -1,32 +1,40 @@
 
 import { useState, useEffect } from 'react';
-import { useParams, Navigate, useSearchParams } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { getSanityArticleBySlug, addSanitySourceMapping } from '@/integrations/sanity/articleService';
 import ArticleLayout from '@/components/layout/ArticleLayout';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import { BadgeAlert, Info } from 'lucide-react';
+import { BadgeAlert, Info, RefreshCw } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const SanityArticle = () => {
   const { slug } = useParams<{ slug: string }>();
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const preview = searchParams.get('sanity-preview') === 'true';
   const [article, setArticle] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     const fetchArticle = async () => {
-      if (!slug) return;
+      if (!slug) {
+        setError('No article slug provided');
+        setLoading(false);
+        return;
+      }
       
       try {
         setLoading(true);
-        console.log(`Fetching Sanity article with slug: ${slug}, preview: ${preview}`);
+        setError(null);
+        console.log(`Fetching Sanity article with slug: ${slug}, preview: ${preview}, retry: ${retryCount}`);
         
         const articleData = await getSanityArticleBySlug(slug);
         
         if (!articleData) {
-          setError('Article not found');
+          setError(`Article with slug "${slug}" not found`);
           console.error(`Sanity article with slug "${slug}" not found`);
         } else {
           // Add source mapping for visual editing
@@ -39,14 +47,14 @@ const SanityArticle = () => {
         }
       } catch (err) {
         console.error('Error fetching Sanity article:', err);
-        setError('Failed to load article');
+        setError(err instanceof Error ? err.message : 'Failed to load article');
       } finally {
         setLoading(false);
       }
     };
 
     fetchArticle();
-  }, [slug, preview]);
+  }, [slug, preview, retryCount]);
   
   // Function to add Sanity metadata tags for visual editing
   const addSanityMetaTags = (documentId: string) => {
@@ -61,6 +69,14 @@ const SanityArticle = () => {
       contentIdMeta.setAttribute('content', documentId);
       head.appendChild(contentIdMeta);
     }
+  };
+
+  const handleRetry = () => {
+    setRetryCount(prev => prev + 1);
+  };
+
+  const handleGoBack = () => {
+    navigate('/articles');
   };
 
   if (loading) {
@@ -90,10 +106,14 @@ const SanityArticle = () => {
             <p className="mt-2">Details: slug={slug}, preview={preview?.toString()}</p>
           </AlertDescription>
         </Alert>
-        <div className="mt-4">
-          <a href="/" className="text-blue-500 hover:text-blue-700 underline">
-            Return to Home
-          </a>
+        <div className="mt-4 flex flex-wrap gap-4">
+          <Button onClick={handleRetry} className="flex items-center gap-2">
+            <RefreshCw className="h-4 w-4" />
+            Try Again
+          </Button>
+          <Button onClick={handleGoBack} variant="outline">
+            Return to Articles
+          </Button>
         </div>
       </ArticleLayout>
     );
