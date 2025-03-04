@@ -1,37 +1,45 @@
 
 import { useState, useEffect } from 'react';
-import { useParams, Navigate, useSearchParams } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { getArticleBySlug } from '@/integrations/contentful/articleService';
 import { addSourceMapping, isPreviewMode } from '@/integrations/contentful/vercelSourceMaps';
 import ArticleLayout from '@/components/layout/ArticleLayout';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import { BadgeAlert, Info } from 'lucide-react';
+import { BadgeAlert, Info, RefreshCw, ArrowLeft } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const ContentfulArticle = () => {
   const { slug } = useParams<{ slug: string }>();
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const preview = searchParams.get('preview') === 'true';
   const contentType = searchParams.get('content_type') || 'article';
   const [article, setArticle] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     const fetchArticle = async () => {
-      if (!slug) return;
+      if (!slug) {
+        setError('No article slug provided');
+        setLoading(false);
+        return;
+      }
       
       try {
         setLoading(true);
-        console.log(`Fetching article with slug: ${slug}, content type: ${contentType}, preview: ${preview}`);
+        setError(null);
+        console.log(`Fetching article with slug: ${slug}, content type: ${contentType}, preview: ${preview}, retry: ${retryCount}`);
         
         const articleData = await getArticleBySlug(slug, contentType);
         
         if (!articleData) {
-          setError('Article not found');
           console.error(`Article with slug "${slug}" not found`);
+          setError('Article not found');
         } else {
-          // Add source mapping to the article for Vercel's Visual Editing
+          // Add source mapping for visual editing
           const articleWithSourceMap = addSourceMapping(articleData);
           setArticle(articleWithSourceMap);
           console.log('Article loaded successfully:', articleWithSourceMap);
@@ -41,14 +49,14 @@ const ContentfulArticle = () => {
         }
       } catch (err) {
         console.error('Error fetching article:', err);
-        setError('Failed to load article');
+        setError(err instanceof Error ? err.message : 'Failed to load article');
       } finally {
         setLoading(false);
       }
     };
 
     fetchArticle();
-  }, [slug, preview, contentType]);
+  }, [slug, preview, contentType, retryCount]);
   
   // Function to add Vercel metadata tags for Visual Editing
   const addVercelMetaTags = (entryId: string) => {
@@ -69,6 +77,21 @@ const ContentfulArticle = () => {
       head.appendChild(sourceUrlMeta);
     }
   };
+
+  const handleRetry = () => {
+    setRetryCount(prev => prev + 1);
+  };
+
+  const handleGoBack = () => {
+    navigate('/articles');
+  };
+  
+  // If the slug is for a static article, try to redirect to the static page
+  useEffect(() => {
+    if (slug && slug === 'comprehensive-vs-collision' && error) {
+      navigate('/pages/articles/ComprehensiveVsCollision');
+    }
+  }, [slug, error, navigate]);
 
   if (loading) {
     return (
@@ -94,13 +117,18 @@ const ContentfulArticle = () => {
           <AlertTitle>Error Loading Article</AlertTitle>
           <AlertDescription>
             {error || "The requested article could not be found. It may have been removed or the URL is incorrect."}
-            <p className="mt-2">Details: slug={slug}, contentType={contentType}, preview={preview.toString()}</p>
+            <p className="mt-2">Details: slug={slug}, contentType={contentType}, preview={String(preview)}</p>
           </AlertDescription>
         </Alert>
-        <div className="mt-4">
-          <a href="/" className="text-blue-500 hover:text-blue-700 underline">
-            Return to Home
-          </a>
+        <div className="mt-4 flex flex-wrap gap-4">
+          <Button onClick={handleRetry} className="flex items-center gap-2">
+            <RefreshCw className="h-4 w-4" />
+            Try Again
+          </Button>
+          <Button onClick={handleGoBack} variant="outline" className="flex items-center gap-2">
+            <ArrowLeft className="h-4 w-4" />
+            Return to Articles
+          </Button>
         </div>
       </ArticleLayout>
     );

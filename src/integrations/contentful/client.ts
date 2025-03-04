@@ -36,3 +36,11 @@ export const createPreviewClient = () => {
     host: 'preview.contentful.com',
   });
 };
+
+// Log Contentful configuration for debugging
+console.log('Contentful Configuration:', {
+  spaceId: CONTENTFUL_SPACE_ID,
+  accessToken: CONTENTFUL_ACCESS_TOKEN ? '✓ Set' : '✗ Not Set',
+  previewToken: CONTENTFUL_PREVIEW_ACCESS_TOKEN ? '✓ Set' : '✗ Not Set',
+  isPreviewMode: isPreviewMode(),
+});

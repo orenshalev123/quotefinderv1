@@ -25,6 +25,7 @@ export const sanityClient = createClient({
   apiVersion: SANITY_API_VERSION,
   useCdn: !isSanityPreviewMode(),
   token: isSanityPreviewMode() ? SANITY_TOKEN : undefined,
+  perspective: 'published',
 });
 
 // Log Sanity configuration for debugging

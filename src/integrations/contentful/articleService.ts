@@ -92,8 +92,8 @@ export const getArticleBySlug = async (slug: string, contentType: string = 'arti
     const client = getClient();
     console.log(`Fetching ${contentType} with slug/ID: "${slug}"`);
     
-    if (contentType === 'quoteFinder') {
-      // For quoteFinder, first try to fetch by entry ID directly
+    // For direct ID lookup (especially for quoteFinder content)
+    if (contentType === 'quoteFinder' || contentType === CONTENT_TYPE_QUOTE_FINDER) {
       try {
         const entry = await client.getEntry(slug);
         console.log('Found entry by ID:', entry);
@@ -104,49 +104,87 @@ export const getArticleBySlug = async (slug: string, contentType: string = 'arti
       }
     }
     
-    // Try to find it as a standard article first
-    const articleResponse = await client.getEntries({
-      content_type: CONTENT_TYPE_ARTICLE,
-      'fields.slug': slug,
-      limit: 1,
-    }).catch(error => {
-      console.log('Error fetching article by slug:', error);
-      return { items: [] };
-    });
+    // Use the correct content type constant instead of string literals
+    const actualContentType = 
+      contentType === 'article' ? CONTENT_TYPE_ARTICLE : 
+      contentType === 'quoteFinder' ? CONTENT_TYPE_QUOTE_FINDER : 
+      contentType; // In case it's already the correct constant
+    
+    // Try to find it as a standard article by slug
+    try {
+      const articleResponse = await client.getEntries({
+        content_type: CONTENT_TYPE_ARTICLE,
+        'fields.slug': slug,
+        limit: 1,
+      });
 
-    if (articleResponse.items.length > 0) {
-      console.log('Found article by slug:', articleResponse.items[0]);
-      return transformArticle(articleResponse.items[0]);
+      if (articleResponse.items.length > 0) {
+        console.log('Found article by slug:', articleResponse.items[0]);
+        return transformArticle(articleResponse.items[0]);
+      }
+    } catch (error) {
+      console.log('Error fetching article by slug:', error);
     }
     
-    // If not found, check if it's a QuoteFinder entry
-    const quoteFinderResponse = await client.getEntries({
-      content_type: CONTENT_TYPE_QUOTE_FINDER,
-      'sys.id': slug, // Try using ID as slug for QuoteFinder content
-      limit: 1,
-    }).catch(error => {
+    // If not found as a standard article, check if it's a QuoteFinder entry by ID
+    try {
+      const quoteFinderResponse = await client.getEntries({
+        content_type: CONTENT_TYPE_QUOTE_FINDER,
+        'sys.id': slug,
+        limit: 1,
+      });
+      
+      if (quoteFinderResponse.items.length > 0) {
+        console.log('Found quoteFinder by ID:', quoteFinderResponse.items[0]);
+        return transformQuoteFinderContent(quoteFinderResponse.items[0]);
+      }
+    } catch (error) {
       console.log('Error fetching QuoteFinder by ID:', error);
-      return { items: [] };
-    });
-    
-    if (quoteFinderResponse.items.length > 0) {
-      console.log('Found quoteFinder by ID:', quoteFinderResponse.items[0]);
-      return transformQuoteFinderContent(quoteFinderResponse.items[0]);
     }
     
-    // If still not found, try searching by slug in QuoteFinder entries
-    const quoteFinderBySlugResponse = await client.getEntries({
-      content_type: CONTENT_TYPE_QUOTE_FINDER,
-      'fields.slug': slug, // Try using slug field if it exists
-      limit: 1,
-    }).catch(error => {
-      console.log('Error fetching QuoteFinder by slug:', error);
-      return { items: [] };
-    });
-    
-    if (quoteFinderBySlugResponse.items.length > 0) {
-      console.log('Found quoteFinder by slug:', quoteFinderBySlugResponse.items[0]);
-      return transformQuoteFinderContent(quoteFinderBySlugResponse.items[0]);
+    // Special case: Try to find the article by its exact name in URL format if all else fails
+    try {
+      const allArticlesResponse = await client.getEntries({
+        content_type: CONTENT_TYPE_ARTICLE,
+        limit: 100,
+      });
+      
+      // Try to find an article that could match this slug through normalization
+      const matchingArticle = allArticlesResponse.items.find(item => {
+        const itemSlug = item.fields.slug;
+        const normalizedRequestSlug = slug.toLowerCase().replace(/\s+/g, '-');
+        const normalizedItemSlug = typeof itemSlug === 'string' 
+          ? itemSlug.toLowerCase().replace(/\s+/g, '-') 
+          : '';
+        
+        return normalizedItemSlug === normalizedRequestSlug ||
+               normalizedItemSlug.includes(normalizedRequestSlug) ||
+               normalizedRequestSlug.includes(normalizedItemSlug);
+      });
+      
+      if (matchingArticle) {
+        console.log('Found article by normalized slug:', matchingArticle);
+        return transformArticle(matchingArticle);
+      }
+    } catch (error) {
+      console.log('Error in fuzzy matching article by slug:', error);
+    }
+
+    // Check if we should try to fetch from our predefined articles
+    if (slug === 'comprehensive-vs-collision') {
+      console.log('This is a known static article, redirecting to static page');
+      return {
+        id: 'comprehensive-vs-collision',
+        title: 'Comprehensive vs. Collision Coverage: What's the Difference?',
+        slug: 'comprehensive-vs-collision',
+        category: 'Coverage Information',
+        date: '2023-10-15',
+        author: 'QuoteFinder Insurance Team',
+        readTime: '5 min read',
+        content: '<h2>Understanding the Difference Between Comprehensive and Collision Coverage</h2><p>When shopping for auto insurance, understanding the difference between comprehensive and collision coverage is essential to ensure you have the right protection for your vehicle.</p><p>Collision coverage helps pay to repair or replace your car if it's damaged in an accident with another vehicle or object, such as a fence or tree. Comprehensive coverage helps pay to replace or repair your vehicle if it's stolen or damaged in an incident that's not a collision, such as fire, vandalism or theft.</p><h3>Collision Coverage: The Details</h3><p>Collision insurance covers damage to your car when you hit another vehicle or object, regardless of who is at fault. It also covers damage from potholes or if your car rolls over.</p><h3>Comprehensive Coverage: The Details</h3><p>Comprehensive insurance covers almost everything else that could happen to your car, such as theft, fire, falling objects, explosions, earthquakes, floods, or collisions with animals.</p><p>Both coverages typically come with a deductible and they only cover damage up to the actual cash value of your car.</p>',
+        excerpt: 'Learn about the key differences between comprehensive and collision coverage and which one might be right for your situation.',
+        featuredImage: '/images/article-comprehensive-collision.jpg'
+      };
     }
 
     console.log(`Content with slug/ID "${slug}" not found in Contentful`);
